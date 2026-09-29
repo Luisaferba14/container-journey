@@ -29,3 +29,4 @@ take_screenshot.js
 test_stages.js
 test_modals.js
 .cache
+.vite/
