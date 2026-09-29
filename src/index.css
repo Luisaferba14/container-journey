@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --color-bg-navy: #07131F;
+  --color-bg-ocean: #0B2235;
+  --color-route-cyan: #27D3F2;
+  --color-box-orange: #FF6B35;
+  --color-badge-fact: #45D6A3;
+  --color-badge-fiction: #F2C66D;
+  --color-badge-assumption: #9E8CFF;
+  --color-badge-calc: #27D3F2;
+  --color-disruption-amber: #FFB020;
+  --color-error-red: #EF5350;
+  --color-text-ice: #F4F8FB;
+  --color-text-steel: #9CB0C0;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #07131F;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1B3B59;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #27D3F2;
+}
+
+/* Base font classes */
+.font-display {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.font-mono-data {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* Pulsing radar effect */
+@keyframes radar-pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 14px rgba(255, 107, 53, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 107, 53, 0);
+  }
+}
+
+.animate-radar {
+  animation: radar-pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+@keyframes amber-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 176, 32, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 176, 32, 0.6);
+  }
+}
+
+.animate-amber-glow {
+  animation: amber-glow 2.5s infinite ease-in-out;
+}
+
+/* Subtle scanline overlay for control-room look */
+.control-room-grid {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(39, 211, 242, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(39, 211, 242, 0.03) 1px, transparent 1px);
+}
