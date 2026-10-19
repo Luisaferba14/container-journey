@@ -10,6 +10,7 @@ export interface DecisionOption {
   consequenceTitle: string;
   consequenceDescription: string;
   regulatorySource: string;
+  firstPersonReaction?: string;
   badgeUnlocked?: {
     id: string;
     title: string;
@@ -121,7 +122,8 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         containerStatusResult: 'Held at CMIT Terminal Gate (No-VGM Lockout)',
         consequenceTitle: 'CRITICAL COMPLIANCE FAILURE: Container Blocked at Port Gate',
         consequenceDescription: 'CMIT terminal operating system rejects the container during OCR gate-in due to an unverified VGM document. The box is turned away to an overflow holding yard. VietStride is assessed a €450 gate re-handling and certified weighing penalty, missing the feeder barge entirely (+24h delay).',
-        regulatorySource: 'IMO SOLAS Chapter VI Regulation 2 (Verified Gross Mass Requirement)'
+        regulatorySource: 'IMO SOLAS Chapter VI Regulation 2 (Verified Gross Mass Requirement)',
+        firstPersonReaction: 'I was hauled all the way to the CMIT port gate, only to be rejected by the OCR scanner! No certified VGM, no entry. I am now locked out in an overflow yard while my feeder barge sails away.'
       },
       {
         id: 'dec-1-opt-b',
@@ -135,6 +137,7 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         consequenceTitle: 'COMPLIANT & SECURE: Clean Export Clearance Achieved',
         consequenceDescription: 'The weighbridge confirms total gross mass of 15,900 kg (12,000 kg cargo + 3,900 kg tare). The corrected packing list is uploaded to VNACCS customs portal. The container departs on the evening barge 12 hours later with zero fines, verified documentation, and clean terminal pre-advice.',
         regulatorySource: 'IMO SOLAS Guidelines MSC.1/Circ.1475 (Method 1 Weighing) & Vietnam Customs Decree 08/2015',
+        firstPersonReaction: 'My weight is officially certified at 15,900 kg on the ICD scale, and the documents match my 600 cartons. I am cleared for the evening river barge without a single fine!',
         badgeUnlocked: {
           id: 'badge-vgm',
           title: 'SOLAS Guardian',
@@ -153,7 +156,8 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         containerStatusResult: 'Commercial & Banking Hold (Letter of Credit Discrepancy)',
         consequenceTitle: 'FINANCIAL HOLD: Bank Rejects Letter of Credit',
         consequenceDescription: 'RhôneSport’s issuing bank in France rejects the documentation because the invoice amount no longer matches the agreed Letter of Credit and purchase order. Cargo clearance is frozen upon arrival pending financial amendment (+48h administrative delay, €850 in banking courier and delay fees).',
-        regulatorySource: 'ICC Uniform Customs and Practice for Documentary Credits (UCP 600)'
+        regulatorySource: 'ICC Uniform Customs and Practice for Documentary Credits (UCP 600)',
+        firstPersonReaction: 'You altered the invoice to 598 cartons, but the French bank caught the discrepancy immediately. My cargo is frozen under a Letter of Credit hold before I have even sailed.'
       }
     ]
   },
@@ -171,7 +175,7 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
     options: [
       {
         id: 'dec-2-opt-a',
-        label: 'A. On-Deck Top Tier (Bay 34, Row 08, Tier 82): Easiest to discharge at Fos',
+        label: 'A. On-Deck Top Tier (Bay 34, Row 08, Tier 82): Quickest to reach at Fos',
         actionSummary: 'Place the container on the uppermost deck tier for immediate gantry access at destination.',
         isBestPractice: false,
         scoreDelta: -10,
@@ -180,7 +184,8 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         containerStatusResult: 'Stowed on Top Deck (Weather Exposure Warning)',
         consequenceTitle: 'WEATHER RISK: Moisture & Salt Spray Exposure',
         consequenceDescription: 'While easy to discharge, top-deck positions endure extreme windage, green sea spray, and acceleration forces up to 2.5G during heavy monsoon seas. Several carton corners suffer condensation dampening, triggering cargo surveyor inspection fees (€220).',
-        regulatorySource: 'IMO Code of Safe Practice for Cargo Stowage and Securing (CSS Code)'
+        regulatorySource: 'IMO Code of Safe Practice for Cargo Stowage and Securing (CSS Code)',
+        firstPersonReaction: 'I am perched on the uppermost deck tier. The monsoon winds are howling at 40 knots and salt spray is soaking my roof welds. My shoe boxes inside are taking heavy dynamic acceleration!'
       },
       {
         id: 'dec-2-opt-b',
@@ -194,6 +199,7 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         consequenceTitle: 'OPTIMAL STOWAGE: Full Cargo & Structural Integrity',
         consequenceDescription: 'Under-deck stowage isolates the footwear from ocean spray, UV, and monsoon winds. The container sits low near the vessel’s vertical center of gravity, minimizing racking stress. MV Portalis sails on schedule with perfect stability calculations.',
         regulatorySource: 'BIMCO / WSC Guidelines for Safe Container Stowage',
+        firstPersonReaction: 'I have been lowered into the cell guides deep in the ship’s belly. Dry, dark, and locked into position near the vessel’s center of gravity. Perfect for crossing the monsoon.',
         badgeUnlocked: {
           id: 'badge-stowage',
           title: 'Stowage Specialist',
@@ -212,7 +218,8 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         containerStatusResult: 'IMDG Segregation Violation (Crane Restow Ordered)',
         consequenceTitle: 'SAFETY VIOLATION: IMDG Code Segregation Breach',
         consequenceDescription: 'The adjacent tank contains Class 3 flammable liquids. IMDG segregation rules require at least one container space separation. The terminal safety officer halts loading; your box must be re-handled by the quay crane at night (€380 restow charge, +18h loading delay).',
-        regulatorySource: 'IMO International Maritime Dangerous Goods (IMDG) Code Chapter 7.2'
+        regulatorySource: 'IMO International Maritime Dangerous Goods (IMDG) Code Chapter 7.2',
+        firstPersonReaction: 'Red alert! The crane operator set me right beside a flammable chemical tank without the required buffer zone. Port safety halted operations and ordered an emergency night restow.'
       }
     ]
   },
@@ -239,7 +246,8 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         containerStatusResult: 'High Hull Slamming / Fuel Surge (+1.8 tCO2e)',
         consequenceTitle: 'DANGEROUS NAVIGATION: Severe Fuel Inefficiency & Cargo Stress',
         consequenceDescription: 'MV Portalis suffers violent slamming into head seas. Fuel consumption doubles, generating an extra 1.8 tonnes of CO2e. Several lashing rods on deck suffer elongation strain. The ship reaches Suez on time, but pays an emergency engine inspection fee (€650).',
-        regulatorySource: 'IMO Resolution A.749(18) Code on Intact Stability'
+        regulatorySource: 'IMO Resolution A.749(18) Code on Intact Stability',
+        firstPersonReaction: 'Violent shuddering! The ship is smashing directly into 5-meter head waves at full throttle. My lashings are groaning under 2G racking forces and fuel burn has spiked.'
       },
       {
         id: 'dec-3-opt-b',
@@ -253,6 +261,7 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         consequenceTitle: 'PRUDENT SEAMANSHIP: Vessel, Crew & Cargo Protected',
         consequenceDescription: 'By altering course slightly south and easing engine RPM, the ship avoids the resonant frequency that triggers parametric roll. Wave accelerations stay within 0.8G. While this adds 18 hours to the voyage (arriving on Day 27), the ship, cargo, and bunker reserves are completely protected.',
         regulatorySource: 'CMA CGM / Blue Meridian Ocean Routing & Bunker Optimization Protocols',
+        firstPersonReaction: 'The captain altered our heading 45 nautical miles south and eased the throttle. The rolling softened immediately. We lost 18 hours, but every single shoe box inside me is safe.',
         badgeUnlocked: {
           id: 'badge-storm',
           title: 'Storm Navigator',
@@ -271,7 +280,8 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         containerStatusResult: 'Diverted via Cape of Good Hope (+11 Days, +€2,400)',
         consequenceTitle: 'MASSIVE DELAY & SURCHARGE: Schedule Disrupted',
         consequenceDescription: 'Rerouting around the Cape of Good Hope adds over 3,200 nautical miles and 11 full transit days. The carrier assesses an Emergency Bunker Surcharge of €2,400. RhôneSport misses their peak winter footwear promotional launch in France.',
-        regulatorySource: 'BIMCO War Risk / Routing Clause (VOYWAR 2013)'
+        regulatorySource: 'BIMCO War Risk / Routing Clause (VOYWAR 2013)',
+        firstPersonReaction: 'We turned completely away from Suez toward the southern tip of Africa! An extra 3,200 nautical miles and 11 days added to my journey. RhôneSport’s promotional launch is ruined.'
       }
     ]
   },
@@ -298,7 +308,8 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         containerStatusResult: 'Stranded at Valencia Transshipment Yard (+6 Days)',
         consequenceTitle: 'CARGO ROLLED: Transshipment Nightmare in Spain',
         consequenceDescription: 'KEDU 240917 4 sits on the quay in Valencia waiting 6 days for the next feeder vessel to Marseille-Fos. Feeder transshipment handling adds €680 in port fees and delays delivery to RhôneSport by almost a week.',
-        regulatorySource: 'Carrier Bill of Lading Transshipment Terms & Conditions'
+        regulatorySource: 'Carrier Bill of Lading Transshipment Terms & Conditions',
+        firstPersonReaction: 'They offloaded me in Spain to save the mother vessel’s schedule! Now I am stranded on the Valencia terminal pavement waiting almost a week for a feeder boat.'
       },
       {
         id: 'dec-4-opt-b',
@@ -312,6 +323,7 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         consequenceTitle: 'PROACTIVE CLEARANCE: Smooth French Arrival Prepared',
         consequenceDescription: 'French Customs risk management system validates the ENS declaration without queries. The 6-hour Valencia delay is absorbed into sea margin between Barcelona and Fos. MV Portalis berths at Eurofos on Day 42 ready for immediate discharge.',
         regulatorySource: 'EU Union Customs Code (UCC) Article 127 & ICS2 Release 2 Requirements',
+        firstPersonReaction: 'My EU ICS2 safety filing was pre-cleared while we were still cruising past the Balearic Islands. The French port system already has my green light for discharge.',
         badgeUnlocked: {
           id: 'badge-ics2',
           title: 'ICS2 Expediter',
@@ -330,7 +342,8 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         containerStatusResult: 'Red Channel Administrative Hold (Late ENS Filing)',
         consequenceTitle: 'STATUTORY NON-COMPLIANCE: Late Filing Fine & Gate Lockout',
         consequenceDescription: 'EU customs regulations require ENS filing at least 24 hours prior to arrival. Filing post-berth triggers a mandatory security risk audit, a €500 administrative penalty from French customs, and a 48-hour gate-out freeze.',
-        regulatorySource: 'French Customs Code (Code des Douanes) Article 411 & UCC Reg 952/2013'
+        regulatorySource: 'French Customs Code (Code des Douanes) Article 411 & UCC Reg 952/2013',
+        firstPersonReaction: 'We reached France, but my paperwork was filed late. French customs locked my electronic clearance for 48 hours and assessed DeltaBridge an administrative penalty.'
       }
     ]
   },
@@ -357,7 +370,8 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         containerStatusResult: 'Terminal Demurrage Accrued (€345 for 3 Extra Days)',
         consequenceTitle: 'DEMURRAGE TRAP: €345 Unbudgeted Storage Penalties',
         consequenceDescription: 'RhôneSport’s administrative office delays filing for 3 days after free time expires. Eurofos terminal invoices €345 in quay storage demurrage (3 days × €115). The scheduled rail shuttle to Lyon is forfeited, requiring an emergency trucking rebooking.',
-        regulatorySource: 'Port of Marseille Fos Terminal Tariff Schedule (Eurofos Storage Terms)'
+        regulatorySource: 'Port of Marseille Fos Terminal Tariff Schedule (Eurofos Storage Terms)',
+        firstPersonReaction: 'Day 4, Day 5, Day 6... I am sitting on the Eurofos asphalt racking up €115 a day in demurrage because nobody filed my clearance in advance. My train is long gone.'
       },
       {
         id: 'dec-5-opt-b',
@@ -371,6 +385,7 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         consequenceTitle: 'FLAWLESS EXECUTION: Zero Demurrage & Clean Customs Release',
         consequenceDescription: 'The mobile scanner confirms high-density carton stacking matching the 12,000 pairs of footwear. The customs inspector issues electronic BAE release within 12 hours. KEDU 240917 4 avoids all demurrage and transfers smoothly to the on-dock rail siding.',
         regulatorySource: 'French Directorate General of Customs (DGDDI) Delta-IE Circular & Port of Marseille Fos PCS (AP+)',
+        firstPersonReaction: 'The mobile x-ray scanner swept through me in minutes. The inspector issued the electronic BAE release within 12 hours, and a reach stacker is already transferring me to the on-dock train siding!',
         badgeUnlocked: {
           id: 'badge-customs',
           title: 'Customs Master',
@@ -389,7 +404,8 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         containerStatusResult: 'SEIZED FOR TARIFF FRAUD INVESTIGATION (5-Day Hold)',
         consequenceTitle: 'FRAUD ALERT: Seizure by French Customs (Douane)',
         consequenceDescription: 'Tariff classification algorithms flag the discrepancy immediately. French customs opens the container for physical unstuffing and verification. A formal procès-verbal is issued: €1,500 fine plus retroactive duties. Forwarder’s AEO accreditation is put on review.',
-        regulatorySource: 'EU Combined Nomenclature (CN) Chapter 64 & French Customs Code Art. 414'
+        regulatorySource: 'EU Combined Nomenclature (CN) Chapter 64 & French Customs Code Art. 414',
+        firstPersonReaction: 'Customs fraud alert! The French Douane inspectors flagged our false tariff code, broke my seal, and ordered full physical unstuffing under investigation. Total disaster.'
       }
     ]
   },
@@ -416,7 +432,8 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         containerStatusResult: 'Delivered by Highway Truck (High Carbon: 480 kg CO2e)',
         consequenceTitle: 'FAST BUT DIRTY: High Tolls & Carbon Footprint',
         consequenceDescription: 'The truck arrives on time via the A7 motorway, but generates 480 kg CO2e and incurs €180 in French motorway tolls (ASF/APRR). RhôneSport’s sustainability manager notes that the shipment failed their modal shift charter.',
-        regulatorySource: 'ADEME French Transport Carbon Database & ASF Toll Tariffs'
+        regulatorySource: 'ADEME French Transport Carbon Database & ASF Toll Tariffs',
+        firstPersonReaction: 'I roared up the A7 highway on an articulated diesel truck. Fast, but heavy on motorway tolls and pumping out 480 kg of CO2, failing RhôneSport’s sustainability target.'
       },
       {
         id: 'dec-6-opt-b',
@@ -430,6 +447,7 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         consequenceTitle: 'SUSTAINABLE LOGISTICS EXCELLENCE: 78% CO2 Reduction',
         consequenceDescription: 'The electric rail shuttle glides up the Rhône valley powered by low-carbon French grid electricity. Final delivery to Saint-Quentin-Fallavier is completed smoothly. Seal VN847291 is inspected and cut, and the electronic POD is signed with zero damage!',
         regulatorySource: 'European Environment Agency (EEA) Rail Freight Emission Factors & Port of Marseille Fos Modal Shift Programme',
+        firstPersonReaction: 'I glided silently up the Rhône valley on an electrified intermodal shuttle powered by French low-carbon electricity. 78% less CO2! Arrived at Saint-Quentin-Fallavier right on time.',
         badgeUnlocked: {
           id: 'badge-eco',
           title: 'Green Logistician',
@@ -448,7 +466,8 @@ export const OPERATIONAL_DECISIONS: OperationalDecision[] = [
         containerStatusResult: 'Chassis Failure on Highway / Safety Incident',
         consequenceTitle: 'OPERATIONAL DISASTER: Road Safety Violation & Cargo Jolt',
         consequenceDescription: 'The budget haulier fails to engage the front twist-locks properly. The container shifts during heavy braking near Saint-Priest, requiring gendarmerie intervention and emergency heavy crane re-rigging (€750 emergency bill, +24h delay).',
-        regulatorySource: 'European Standard EN 12195 (Load Securing on Road Vehicles)'
+        regulatorySource: 'European Standard EN 12195 (Load Securing on Road Vehicles)',
+        firstPersonReaction: 'The budget trucker forgot to lock my front chassis twist-locks! During heavy braking near Lyon, my corner castings slipped and the highway police pulled us over. Emergency crane required.'
       }
     ]
   }

@@ -35,7 +35,6 @@ interface SceneDossierProps {
   onOpenActors: () => void;
   onOpenCosts: () => void;
   onOpenEmissions: () => void;
-  onOpenSlotSelector?: () => void;
   onOpenPortSim?: () => void;
   onOpenDisruption?: (id: 'event-1' | 'event-2' | 'event-3') => void;
   onOpenPassport?: () => void;
@@ -54,7 +53,6 @@ export const SceneDossier: React.FC<SceneDossierProps> = ({
   onOpenActors,
   onOpenCosts,
   onOpenEmissions,
-  onOpenSlotSelector,
   onOpenPortSim,
   onOpenDisruption,
   onOpenPassport,
@@ -98,21 +96,32 @@ export const SceneDossier: React.FC<SceneDossierProps> = ({
             <span>•</span>
             <span className="text-[#45D6A3]">{stage.currentCustodian}</span>
             <span>•</span>
-            <EvidenceBadge label={stage.stageNumber <= 2 ? 'fictional' : 'assumption'} />
+            <span className={`px-2 py-0.5 rounded font-bold uppercase text-[10px] ${
+              existingDecisionChoice
+                ? existingDecisionChoice.isBestPractice ? 'bg-[#45D6A3]/20 text-[#45D6A3]' : 'bg-[#EF5350]/20 text-[#EF5350]'
+                : 'bg-[#1B3B59]/50 text-slate-300'
+            }`}>
+              {existingDecisionChoice ? existingDecisionChoice.containerStatusResult : stage.status}
+            </span>
           </div>
         </div>
 
-        {/* The Protagonist Voice (The Box Speaks) */}
-        <div className="relative pl-4 border-l-2 border-[#FF6B35] py-1">
-          <p className="text-sm font-sans italic text-slate-200 leading-relaxed">
-            "{stage.firstPersonVoice}"
+        {/* The Protagonist Voice (The Box Speaks with dynamic reaction based on choices) */}
+        <div className="relative pl-4 border-l-2 border-[#FF6B35] py-1 bg-[#0B2235]/30 rounded-r-xl pr-3">
+          <p className="text-sm font-sans italic text-slate-100 leading-relaxed">
+            "{existingDecisionChoice?.firstPersonReaction || stage.firstPersonVoice}"
           </p>
-          <span className="block text-[11px] font-mono text-[#FF6B35]/80 mt-1">
-            — KEDU 240917 4
+          <span className="block text-[11px] font-mono text-[#FF6B35]/90 mt-1.5 flex items-center gap-1.5">
+            <span>— KEDU 240917 4</span>
+            {existingDecisionChoice && (
+              <span className="text-[10px] text-slate-400 font-sans">
+                (Reflecting directive outcome)
+              </span>
+            )}
           </span>
         </div>
 
-        {/* GAMIFIED OPERATIONAL DECISION CARD (If stage has a decision point) */}
+        {/* GAMIFIED OPERATIONAL DECISION & CIRCUMSTANCE CARD */}
         {stageDecision && (
           <div className={`p-4 rounded-xl border transition-all ${
             existingDecisionChoice
@@ -137,21 +146,27 @@ export const SceneDossier: React.FC<SceneDossierProps> = ({
               </span>
             </div>
 
-            <p className="text-xs text-slate-300 font-sans mt-2 leading-relaxed">
-              {stageDecision.dilemma}
-            </p>
-
             {existingDecisionChoice ? (
-              <div className="mt-3 pt-3 border-t border-white/10 space-y-2">
-                <div className="flex items-center justify-between text-xs font-mono">
-                  <span className="text-slate-300">Your Directive:</span>
-                  <strong className={existingDecisionChoice.isBestPractice ? 'text-[#45D6A3]' : 'text-[#EF5350]'}>
-                    {existingDecisionChoice.scoreDelta > 0 ? `+${existingDecisionChoice.scoreDelta} pts` : `${existingDecisionChoice.scoreDelta} pts`}
-                  </strong>
+              <div className="mt-3 space-y-2.5">
+                <div className="p-3 rounded-lg bg-[#07131F]/80 border border-white/10 space-y-1">
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <span className="text-[#27D3F2] font-semibold">Active Circumstance:</span>
+                    <strong className={existingDecisionChoice.isBestPractice ? 'text-[#45D6A3]' : 'text-[#EF5350]'}>
+                      {existingDecisionChoice.scoreDelta > 0 ? `+${existingDecisionChoice.scoreDelta} pts` : `${existingDecisionChoice.scoreDelta} pts`}
+                    </strong>
+                  </div>
+                  <h4 className="text-xs font-bold text-white font-sans">
+                    {existingDecisionChoice.consequenceTitle}
+                  </h4>
+                  <p className="text-xs text-slate-300 font-sans leading-relaxed">
+                    {existingDecisionChoice.consequenceDescription}
+                  </p>
+                  <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-300">
+                    <span>Delay: <strong className="text-white">{existingDecisionChoice.timeImpactHours > 0 ? `+${existingDecisionChoice.timeImpactHours}h` : '0h'}</strong></span>
+                    <span>Cost: <strong className={existingDecisionChoice.costImpactEuro > 0 ? 'text-[#EF5350]' : 'text-[#45D6A3]'}>{existingDecisionChoice.costImpactEuro > 0 ? `+€${existingDecisionChoice.costImpactEuro}` : '€0'}</strong></span>
+                  </div>
                 </div>
-                <div className="p-2.5 rounded-lg bg-[#07131F]/70 border border-white/10 text-xs text-slate-200 font-sans">
-                  {existingDecisionChoice.consequenceTitle}: {existingDecisionChoice.containerStatusResult}
-                </div>
+
                 <button
                   type="button"
                   onClick={() => onOpenDecision && onOpenDecision(stageDecision)}
@@ -162,13 +177,16 @@ export const SceneDossier: React.FC<SceneDossierProps> = ({
                 </button>
               </div>
             ) : (
-              <div className="mt-3">
+              <div className="mt-2 space-y-2.5">
+                <p className="text-xs text-slate-300 font-sans leading-relaxed">
+                  {stageDecision.dilemma}
+                </p>
                 <button
                   type="button"
                   onClick={() => onOpenDecision && onOpenDecision(stageDecision)}
                   className="w-full py-2.5 rounded-lg bg-[#FFB020] hover:bg-[#E59A15] text-[#07131F] font-mono font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer"
                 >
-                  <span>Issue Forwarding Directive →</span>
+                  <span>Select Operational Directive →</span>
                 </button>
               </div>
             )}
@@ -206,67 +224,7 @@ export const SceneDossier: React.FC<SceneDossierProps> = ({
           </p>
         </div>
 
-        {/* Contextual Single Interactive Action Button for Key Stages */}
-        {stage.disruptionId === 'event-1' && (
-          <div className="p-4 rounded-xl bg-[#FFB020]/10 border border-[#FFB020]/40 space-y-2">
-            <div className="flex items-center justify-between text-xs font-mono text-[#FFB020] font-bold">
-              <span className="flex items-center gap-1.5">
-                <AlertTriangle className="w-4 h-4" />
-                Disruption 1: 598 vs 600 Cartons Mismatch
-              </span>
-              <span>+12h Hold</span>
-            </div>
-            <p className="text-xs text-slate-300">
-              A clerical error on the packing list stopped customs clearance. Inspect and fix the discrepancy.
-            </p>
-            <button
-              type="button"
-              onClick={() => onOpenDisruption && onOpenDisruption('event-1')}
-              className="w-full py-2.5 rounded-lg bg-[#FFB020] hover:bg-[#E59A15] text-[#07131F] font-mono font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-            >
-              Open Document Comparison Tool →
-            </button>
-          </div>
-        )}
-
-        {stage.disruptionId === 'event-2' && (
-          <div className="p-4 rounded-xl bg-[#FFB020]/10 border border-[#FFB020]/40 space-y-2">
-            <div className="flex items-center justify-between text-xs font-mono text-[#FFB020] font-bold">
-              <span>Disruption 2: Indian Ocean Monsoon Swell</span>
-              <span>+1.5 Days</span>
-            </div>
-            <p className="text-xs text-slate-300">
-              Vessel reduced speed to 14 knots. ETA changed across the entire network.
-            </p>
-            <button
-              type="button"
-              onClick={() => onOpenDisruption && onOpenDisruption('event-2')}
-              className="w-full py-2.5 rounded-lg bg-[#FFB020] hover:bg-[#E59A15] text-[#07131F] font-mono font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-            >
-              Inspect Weather Routing & Ghost Path →
-            </button>
-          </div>
-        )}
-
-        {stage.disruptionId === 'event-3' && (
-          <div className="p-4 rounded-xl bg-[#EF5350]/10 border border-[#EF5350]/40 space-y-2">
-            <div className="flex items-center justify-between text-xs font-mono text-[#EF5350] font-bold">
-              <span>Disruption 3: Customs Scan & Missed Rail</span>
-              <span>+1.0 Day Net</span>
-            </div>
-            <p className="text-xs text-slate-300">
-              Non-intrusive x-ray scan cleared, but caused the container to miss its scheduled train shuttle.
-            </p>
-            <button
-              type="button"
-              onClick={() => onOpenDisruption && onOpenDisruption('event-3')}
-              className="w-full py-2.5 rounded-lg bg-[#EF5350] hover:bg-[#D93D3A] text-white font-mono font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-            >
-              Inspect Customs Scan & Rail Rebooking →
-            </button>
-          </div>
-        )}
-
+        {/* Stage 8: Port Terminal Cycle (Optional deep dive) */}
         {stage.id === 'stage-terminal-origin' && (
           <button
             type="button"
@@ -274,16 +232,6 @@ export const SceneDossier: React.FC<SceneDossierProps> = ({
             className="w-full py-2.5 rounded-xl bg-[#0B2235] hover:bg-[#1B3B59] border border-[#27D3F2]/50 text-[#27D3F2] font-mono font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
           >
             Launch CMIT 6-Station Terminal Loop Simulation →
-          </button>
-        )}
-
-        {stage.id === 'stage-loading' && (
-          <button
-            type="button"
-            onClick={onOpenSlotSelector}
-            className="w-full py-2.5 rounded-xl bg-[#0B2235] hover:bg-[#1B3B59] border border-[#FF6B35]/50 text-[#FF6B35] font-mono font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
-          >
-            Find My Slot: Bay 34 / Row 08 / Tier 82 →
           </button>
         )}
 

@@ -141,11 +141,15 @@ export const DecisionModal: React.FC<DecisionModalProps> = ({
                       </div>
 
                       <div className="shrink-0 flex items-center gap-1 font-mono text-xs">
-                        {option.scoreDelta > 0 ? (
-                          <span className="text-[#45D6A3] font-bold">+{option.scoreDelta} pts</span>
-                        ) : (
-                          <span className="text-[#EF5350] font-bold">{option.scoreDelta} pts</span>
-                        )}
+                        <span className={`px-2 py-1 rounded text-[11px] font-bold ${
+                          isSelected
+                            ? option.isBestPractice
+                              ? 'bg-[#45D6A3]/20 text-[#45D6A3]'
+                              : 'bg-[#EF5350]/20 text-[#EF5350]'
+                            : 'bg-[#1B3B59]/50 text-[#27D3F2] group-hover:bg-[#27D3F2]/20'
+                        }`}>
+                          {isSelected ? 'Selected' : 'Issue Directive →'}
+                        </span>
                       </div>
                     </div>
                   </button>

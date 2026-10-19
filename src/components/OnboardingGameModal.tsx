@@ -70,13 +70,13 @@ export const OnboardingGameModal: React.FC<OnboardingGameModalProps> = ({
                   Interactive Simulator · Step {currentStep} of 3
                 </span>
                 <span className="text-xs font-mono text-[#9CB0C0]">
-                  {currentStep === 1 ? 'Role & Profile' : currentStep === 2 ? 'Mission & Objectives' : 'GUI Navigation Guide'}
+                  {currentStep === 1 ? 'Role & Profile' : currentStep === 2 ? 'Mission & Objectives' : 'Operations Console Guide'}
                 </span>
               </div>
               <h3 className="text-lg font-bold font-display text-white mt-0.5">
                 {currentStep === 1 && 'Welcome to BOX 917 — Choose Your Profile'}
                 {currentStep === 2 && 'The Mission: One Container. 47 Days. One Global System.'}
-                {currentStep === 3 && 'GUI Walkthrough — How to Navigate & Play'}
+                {currentStep === 3 && 'Operations Console — Controls & How to Play'}
               </h3>
             </div>
           </div>
@@ -123,7 +123,7 @@ export const OnboardingGameModal: React.FC<OnboardingGameModalProps> = ({
                 : 'border-transparent text-slate-500 hover:text-slate-300'
             }`}
           >
-            3. GUI & Controls Guide
+            3. Console & Controls Guide
           </button>
         </div>
 
@@ -272,28 +272,28 @@ export const OnboardingGameModal: React.FC<OnboardingGameModalProps> = ({
             </div>
           )}
 
-          {/* STEP 3: GUI NAVIGATION GUIDE */}
+          {/* STEP 3: CONSOLE & CONTROLS GUIDE */}
           {currentStep === 3 && (
             <div className="space-y-4">
               <div className="p-4 rounded-xl bg-[#0B2235]/60 border border-[#1B3B59] space-y-1">
                 <span className="text-[11px] font-mono uppercase tracking-wider text-[#45D6A3] font-bold">
-                  GUI Layout & Controls (Where to Find Things)
+                  Your Operations Console (Where to Find Things)
                 </span>
                 <p className="text-xs text-slate-300 font-sans">
-                  Here is a quick map of the interface so you know how to navigate effortlessly:
+                  Here is how your operations screen is laid out so you can manage the shipment with confidence:
                 </p>
               </div>
 
               <div className="grid sm:grid-cols-2 gap-3 text-xs font-mono">
                 
-                {/* 1. Top HUD */}
+                {/* 1. Top Operations Bar */}
                 <div className="p-3.5 rounded-xl bg-[#0B2235]/40 border border-[#1B3B59] space-y-1">
                   <div className="flex items-center gap-2 text-[#27D3F2] font-bold">
                     <Sliders className="w-4 h-4" />
-                    <span>1. Top Header Bar</span>
+                    <span>1. Top Operations Bar</span>
                   </div>
                   <p className="text-slate-300 font-sans text-[11px]">
-                    Displays your <strong className="text-white">Trainee Score (100 pts)</strong>, current Rank, active Role, and access to the <strong className="text-[#FF6B35]">10-Question Assessment</strong> and Manager Guide.
+                    Shows your <strong className="text-white">Trainee Score (100 pts)</strong>, rank, and active role. Opens the data drawers: Container Passport, Shipping Documents, Cost Ledger, and Knowledge Assessment.
                   </p>
                 </div>
 
@@ -301,10 +301,10 @@ export const OnboardingGameModal: React.FC<OnboardingGameModalProps> = ({
                 <div className="p-3.5 rounded-xl bg-[#0B2235]/40 border border-[#1B3B59] space-y-1">
                   <div className="flex items-center gap-2 text-[#FF6B35] font-bold">
                     <FileText className="w-4 h-4" />
-                    <span>2. Left Dossier & Decisions</span>
+                    <span>2. Operations Log & Decisions (Left)</span>
                   </div>
                   <p className="text-slate-300 font-sans text-[11px]">
-                    Tells the story of each stage. When an operational problem happens, an amber <strong className="text-[#FFB020]">⚡ Decision Card</strong> appears requiring your choice before proceeding!
+                    Tells the story of each milestone. When a supply chain bottleneck occurs, an amber <strong className="text-[#FFB020]">⚡ Decision Card</strong> prompts you to issue the operational directive!
                   </p>
                 </div>
 
@@ -312,21 +312,21 @@ export const OnboardingGameModal: React.FC<OnboardingGameModalProps> = ({
                 <div className="p-3.5 rounded-xl bg-[#0B2235]/40 border border-[#1B3B59] space-y-1">
                   <div className="flex items-center gap-2 text-[#45D6A3] font-bold">
                     <MapPin className="w-4 h-4" />
-                    <span>3. Right World Map</span>
+                    <span>3. Global Shipping Map (Right)</span>
                   </div>
                   <p className="text-slate-300 font-sans text-[11px]">
-                    High-performance vector map automatically follows container <strong className="text-white">917</strong> with smooth camera flyTo animations. Toggle weather layers and zoom freely in Explore mode.
+                    Tracks container <strong className="text-white">917</strong> along its 15,870 km multimodal journey. Follows the container automatically, or click <strong className="text-[#27D3F2]">Explore</strong> to pan and inspect ports freely.
                   </p>
                 </div>
 
-                {/* 4. Timeline Scrubber */}
+                {/* 4. Timeline */}
                 <div className="p-3.5 rounded-xl bg-[#0B2235]/40 border border-[#1B3B59] space-y-1">
                   <div className="flex items-center gap-2 text-[#27D3F2] font-bold">
                     <Clock className="w-4 h-4" />
-                    <span>4. Timeline Scrubber</span>
+                    <span>4. 47-Day Voyage Timeline</span>
                   </div>
                   <p className="text-slate-300 font-sans text-[11px]">
-                    Under the header, click any point on the dual timeline to inspect planned vs actual days (44d vs 47d) and review disruption milestones.
+                    Click any day along the voyage bar to inspect the planned 44-day schedule versus the 47-day actual journey, and see why delays occurred.
                   </p>
                 </div>
 

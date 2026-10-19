@@ -12,7 +12,6 @@ import { ActorConstellation } from './ActorConstellation';
 import { CostStack } from './CostStack';
 import { EmissionsLens } from './EmissionsLens';
 import { PortMicroExperience } from './PortMicroExperience';
-import { SlotSelectorModal } from './SlotSelectorModal';
 import { DisruptionModal } from './DisruptionModal';
 import { EvidenceLedgerModal } from './EvidenceLedgerModal';
 import { DecisionModal } from './DecisionModal';
@@ -45,7 +44,6 @@ export const JourneyShell: React.FC = () => {
   const [isCostsOpen, setIsCostsOpen] = useState(false);
   const [isEmissionsOpen, setIsEmissionsOpen] = useState(false);
   const [isPortSimOpen, setIsPortSimOpen] = useState(false);
-  const [isSlotSelectorOpen, setIsSlotSelectorOpen] = useState(false);
   const [isSourcesOpen, setIsSourcesOpen] = useState(false);
   const [activeDisruptionId, setActiveDisruptionId] = useState<'event-1' | 'event-2' | 'event-3' | null>(null);
 
@@ -84,7 +82,6 @@ export const JourneyShell: React.FC = () => {
         setIsCostsOpen(false);
         setIsEmissionsOpen(false);
         setIsPortSimOpen(false);
-        setIsSlotSelectorOpen(false);
         setIsSourcesOpen(false);
         setActiveDisruptionId(null);
         setActiveDecision(null);
@@ -202,7 +199,6 @@ export const JourneyShell: React.FC = () => {
             onOpenActors={() => setIsActorsOpen(true)}
             onOpenCosts={() => setIsCostsOpen(true)}
             onOpenEmissions={() => setIsEmissionsOpen(true)}
-            onOpenSlotSelector={() => setIsSlotSelectorOpen(true)}
             onOpenPortSim={() => setIsPortSimOpen(true)}
             onOpenDisruption={(id) => setActiveDisruptionId(id)}
             onOpenPassport={() => setIsPassportOpen(true)}
@@ -289,11 +285,6 @@ export const JourneyShell: React.FC = () => {
       <PortMicroExperience
         isOpen={isPortSimOpen}
         onClose={() => setIsPortSimOpen(false)}
-      />
-
-      <SlotSelectorModal
-        isOpen={isSlotSelectorOpen}
-        onClose={() => setIsSlotSelectorOpen(false)}
       />
 
       <DisruptionModal

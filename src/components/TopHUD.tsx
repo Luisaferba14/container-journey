@@ -186,7 +186,7 @@ export const TopHUD: React.FC<TopHUDProps> = ({
       {/* Right: Actions & Academy Tools */}
       <div className="flex items-center gap-1.5 sm:gap-2">
         
-        {/* Quick GUI Guide & Role Setup Trigger */}
+        {/* Quick Guide & Role Setup Trigger */}
         <button
           type="button"
           onClick={() => {
@@ -194,7 +194,7 @@ export const TopHUD: React.FC<TopHUDProps> = ({
             onOpenOnboardingGuide();
           }}
           className="px-2.5 py-1.5 rounded-lg bg-[#FF6B35]/15 hover:bg-[#FF6B35]/25 text-[#FF6B35] font-mono font-bold text-xs border border-[#FF6B35]/40 flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
-          title="Open Game Setup & GUI Navigation Tour"
+          title="Open How to Play & Console Controls"
         >
           <HelpCircle className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">How To Play</span>
@@ -235,8 +235,8 @@ export const TopHUD: React.FC<TopHUDProps> = ({
               >
                 <HelpCircle className="w-3.5 h-3.5 text-[#FF6B35]" />
                 <div>
-                  <span className="block font-semibold">Game Tour & GUI Guide</span>
-                  <span className="text-[10px] text-slate-400 block">Switch roles & review controls</span>
+                  <span className="block font-semibold">How to Play & Controls</span>
+                  <span className="text-[10px] text-slate-400 block">Switch roles & review operations console</span>
                 </div>
               </button>
 
