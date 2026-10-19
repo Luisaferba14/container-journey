@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { JourneyStage } from '../types/journey';
+import { OPERATIONAL_DECISIONS, OperationalDecision, DecisionOption } from '../data/simulation';
 import { EvidenceBadge } from './EvidenceBadge';
 import { soundManager } from './AudioController';
 import {
@@ -17,7 +18,11 @@ import {
   Lock,
   Unlock,
   CheckCircle2,
-  RefreshCw
+  XCircle,
+  RotateCcw,
+  Clock,
+  Euro,
+  Award
 } from 'lucide-react';
 
 interface SceneDossierProps {
@@ -34,6 +39,8 @@ interface SceneDossierProps {
   onOpenPortSim?: () => void;
   onOpenDisruption?: (id: 'event-1' | 'event-2' | 'event-3') => void;
   onOpenPassport?: () => void;
+  onOpenDecision?: (decision: OperationalDecision) => void;
+  userDecisions: Record<string, DecisionOption>;
 }
 
 export const SceneDossier: React.FC<SceneDossierProps> = ({
@@ -49,17 +56,22 @@ export const SceneDossier: React.FC<SceneDossierProps> = ({
   onOpenSlotSelector,
   onOpenPortSim,
   onOpenDisruption,
-  onOpenPassport
+  onOpenPassport,
+  onOpenDecision,
+  userDecisions
 }) => {
   const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
-  const [palletsCount, setPalletsCount] = useState(20);
   const [sealCut, setSealCut] = useState(false);
+
+  // Check if current stage has an operational decision point
+  const stageDecision = OPERATIONAL_DECISIONS.find((d) => d.stageId === stage.id);
+  const existingDecisionChoice = stageDecision ? userDecisions[stageDecision.id] : undefined;
 
   return (
     <div className="w-full h-full flex flex-col bg-[#07131F] text-[#F4F8FB] select-none overflow-hidden">
       
       {/* Scrollable Story Panel */}
-      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
         
         {/* Stage Meta & Title */}
         <div className="space-y-2">
@@ -97,6 +109,69 @@ export const SceneDossier: React.FC<SceneDossierProps> = ({
             — KEDU 240917 4
           </span>
         </div>
+
+        {/* GAMIFIED OPERATIONAL DECISION CARD (If stage has a decision point) */}
+        {stageDecision && (
+          <div className={`p-4 rounded-xl border transition-all ${
+            existingDecisionChoice
+              ? existingDecisionChoice.isBestPractice
+                ? 'bg-[#45D6A3]/10 border-[#45D6A3]/60 ring-1 ring-[#45D6A3]/30'
+                : 'bg-[#EF5350]/10 border-[#EF5350]/60 ring-1 ring-[#EF5350]/30'
+              : 'bg-gradient-to-r from-[#FFB020]/15 to-[#27D3F2]/10 border-[#FFB020]/70 ring-1 ring-[#FFB020]/40 animate-pulse'
+          }`}>
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className={`w-4 h-4 shrink-0 ${existingDecisionChoice ? (existingDecisionChoice.isBestPractice ? 'text-[#45D6A3]' : 'text-[#EF5350]') : 'text-[#FFB020]'}`} />
+                <span className="font-mono text-xs font-bold uppercase tracking-wider text-white">
+                  Decision {stageDecision.decisionNumber}/6: {stageDecision.scenarioTitle}
+                </span>
+              </div>
+              <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${
+                existingDecisionChoice
+                  ? existingDecisionChoice.isBestPractice ? 'bg-[#45D6A3]/20 text-[#45D6A3]' : 'bg-[#EF5350]/20 text-[#EF5350]'
+                  : 'bg-[#FFB020]/20 text-[#FFB020]'
+              }`}>
+                {existingDecisionChoice ? (existingDecisionChoice.isBestPractice ? 'Directive Resolved' : 'Penalty Incurred') : 'Action Required'}
+              </span>
+            </div>
+
+            <p className="text-xs text-slate-300 font-sans mt-2 leading-relaxed">
+              {stageDecision.dilemma}
+            </p>
+
+            {existingDecisionChoice ? (
+              <div className="mt-3 pt-3 border-t border-white/10 space-y-2">
+                <div className="flex items-center justify-between text-xs font-mono">
+                  <span className="text-slate-300">Your Directive:</span>
+                  <strong className={existingDecisionChoice.isBestPractice ? 'text-[#45D6A3]' : 'text-[#EF5350]'}>
+                    {existingDecisionChoice.scoreDelta > 0 ? `+${existingDecisionChoice.scoreDelta} pts` : `${existingDecisionChoice.scoreDelta} pts`}
+                  </strong>
+                </div>
+                <div className="p-2.5 rounded-lg bg-[#07131F]/70 border border-white/10 text-xs text-slate-200 font-sans">
+                  {existingDecisionChoice.consequenceTitle}: {existingDecisionChoice.containerStatusResult}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onOpenDecision && onOpenDecision(stageDecision)}
+                  className="w-full py-2 rounded-lg bg-[#0B2235] hover:bg-[#1B3B59] border border-[#1B3B59] text-xs font-mono text-[#27D3F2] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  Review or Alter Directive
+                </button>
+              </div>
+            ) : (
+              <div className="mt-3">
+                <button
+                  type="button"
+                  onClick={() => onOpenDecision && onOpenDecision(stageDecision)}
+                  className="w-full py-2.5 rounded-lg bg-[#FFB020] hover:bg-[#E59A15] text-[#07131F] font-mono font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer"
+                >
+                  <span>Issue Forwarding Directive →</span>
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Narrative Prose */}
         <div className="space-y-3 text-sm text-slate-300 leading-relaxed font-sans">

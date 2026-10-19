@@ -13,7 +13,12 @@ import {
   Anchor,
   Play,
   Eye,
-  ChevronDown
+  ChevronDown,
+  Award,
+  Target,
+  Bot,
+  ShieldCheck,
+  Sparkles
 } from 'lucide-react';
 
 interface TopHUDProps {
@@ -29,6 +34,14 @@ interface TopHUDProps {
   onOpenEmissions: () => void;
   onOpenPort: () => void;
   onOpenSources: () => void;
+  traineeScore: number;
+  badgesCount: number;
+  onOpenBriefing: () => void;
+  onOpenAssessment: () => void;
+  onOpenFacilitatorGuide: () => void;
+  onOpenTesterFeedback: () => void;
+  onOpenMentor: () => void;
+  traineeName: string;
 }
 
 export const TopHUD: React.FC<TopHUDProps> = ({
@@ -43,18 +56,37 @@ export const TopHUD: React.FC<TopHUDProps> = ({
   onOpenCosts,
   onOpenEmissions,
   onOpenPort,
-  onOpenSources
+  onOpenSources,
+  traineeScore,
+  badgesCount,
+  onOpenBriefing,
+  onOpenAssessment,
+  onOpenFacilitatorGuide,
+  onOpenTesterFeedback,
+  onOpenMentor,
+  traineeName
 }) => {
   const [isMuted, setIsMuted] = useState(true);
   const [showLensesMenu, setShowLensesMenu] = useState(false);
+  const [showTrainingMenu, setShowTrainingMenu] = useState(false);
 
   const handleToggleSound = () => {
     const muted = soundManager.toggleMute();
     setIsMuted(muted);
   };
 
+  // Determine rank based on score
+  const getRank = (score: number) => {
+    if (score >= 175) return { title: 'Master Forwarder', color: 'text-[#45D6A3] border-[#45D6A3]' };
+    if (score >= 140) return { title: 'Senior Ops Specialist', color: 'text-[#27D3F2] border-[#27D3F2]' };
+    if (score >= 100) return { title: 'Junior Forwarder', color: 'text-[#FFB020] border-[#FFB020]' };
+    return { title: 'Cadet Apprentice', color: 'text-[#EF5350] border-[#EF5350]' };
+  };
+
+  const rank = getRank(traineeScore);
+
   return (
-    <header className="w-full bg-[#07131F] border-b border-[#1B3B59]/60 px-4 py-2 flex items-center justify-between select-none z-30 relative h-13">
+    <header className="w-full bg-[#07131F] border-b border-[#1B3B59]/60 px-3 sm:px-4 py-2 flex items-center justify-between select-none z-30 relative h-13">
       
       {/* Left: Wordmark & Stage Navigation Indicator */}
       <div className="flex items-center gap-3">
@@ -74,40 +106,157 @@ export const TopHUD: React.FC<TopHUDProps> = ({
           </div>
         </div>
 
-        <div className="hidden sm:flex items-center gap-2 pl-3 border-l border-[#1B3B59]/60">
+        <div className="hidden lg:flex items-center gap-2 pl-3 border-l border-[#1B3B59]/60">
           <span className="px-2 py-0.5 rounded bg-[#0B2235] text-[10px] font-mono font-semibold text-[#27D3F2] border border-[#1B3B59]">
             {currentStage.stageNumber}/{totalStages}
           </span>
-          <span className="text-xs font-medium text-white max-w-[220px] md:max-w-xs truncate">
+          <span className="text-xs font-medium text-white max-w-[180px] xl:max-w-xs truncate">
             {currentStage.title}
           </span>
         </div>
       </div>
 
-      {/* Center: Clean Progress Pill */}
-      <div className="hidden md:flex items-center gap-3 bg-[#0B2235]/60 px-3 py-1 rounded-full border border-[#1B3B59]/50 text-xs font-mono">
-        <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-[#27D3F2]" />
-          <span className="text-[#27D3F2]">Plan: 44d</span>
-        </div>
-        <span className="text-[#9CB0C0]/40">|</span>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-[#FFB020]" />
-          <span className="text-[#FFB020]">Actual: 47d (+3d)</span>
+      {/* Center: Trainee Performance Dashboard Pill */}
+      <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 bg-[#0B2235]/70 px-3 py-1 rounded-full border border-[#1B3B59] text-xs font-mono">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-[#45D6A3] animate-pulse" />
+            <span className="text-slate-300 hidden sm:inline">{traineeName || 'Trainee'}:</span>
+            <strong className="text-[#45D6A3]">{traineeScore} pts</strong>
+          </div>
+          <span className="text-[#1B3B59]">|</span>
+          <span className={`text-[11px] font-bold hidden md:inline ${rank.color}`}>
+            {rank.title}
+          </span>
+          {badgesCount > 0 && (
+            <>
+              <span className="text-[#1B3B59] hidden sm:inline">|</span>
+              <span className="text-[11px] text-[#FFB020] hidden sm:flex items-center gap-1">
+                <span>🏅</span> {badgesCount} Badges
+              </span>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Right: Actions (Clean Dropdown, Passport, Sound, Sources) */}
-      <div className="flex items-center gap-2">
+      {/* Right: Actions & Academy Tools */}
+      <div className="flex items-center gap-1.5 sm:gap-2">
         
-        {/* Lenses / Deep Dive Dropdown Menu */}
+        {/* Training Academy Menu Dropdown */}
         <div className="relative">
           <button
             type="button"
-            onClick={() => setShowLensesMenu(!showLensesMenu)}
+            onClick={() => {
+              soundManager.playClick();
+              setShowTrainingMenu(!showTrainingMenu);
+              setShowLensesMenu(false);
+            }}
+            className="px-2.5 py-1.5 rounded-lg bg-[#27D3F2]/10 hover:bg-[#27D3F2]/20 text-xs font-mono font-bold text-[#27D3F2] border border-[#27D3F2]/40 flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <Target className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Training Hub</span>
+            <ChevronDown className="w-3 h-3" />
+          </button>
+
+          {showTrainingMenu && (
+            <div
+              className="absolute right-0 mt-2 w-64 bg-[#0B2235] border border-[#1B3B59] rounded-xl shadow-2xl py-1.5 z-50 text-xs font-mono animate-in fade-in zoom-in-95 duration-150"
+              onMouseLeave={() => setShowTrainingMenu(false)}
+            >
+              <div className="px-3 py-1 text-[10px] uppercase font-bold text-[#27D3F2] tracking-wider">
+                Challenge 8 Logistics Training
+              </div>
+
+              <button
+                onClick={() => {
+                  soundManager.playClick();
+                  setShowTrainingMenu(false);
+                  onOpenBriefing();
+                }}
+                className="w-full px-3 py-2 text-left hover:bg-[#1B3B59]/50 text-white flex items-center gap-2 cursor-pointer"
+              >
+                <Target className="w-3.5 h-3.5 text-[#27D3F2]" />
+                <div>
+                  <span className="block">Mission Briefing</span>
+                  <span className="text-[10px] text-slate-400 block">5 Stated Learning Objectives</span>
+                </div>
+              </button>
+
+              <button
+                onClick={() => {
+                  soundManager.playClick();
+                  setShowTrainingMenu(false);
+                  onOpenAssessment();
+                }}
+                className="w-full px-3 py-2 text-left hover:bg-[#1B3B59]/50 text-white flex items-center gap-2 cursor-pointer"
+              >
+                <Award className="w-3.5 h-3.5 text-[#FF6B35]" />
+                <div>
+                  <span className="block">10-Question Assessment</span>
+                  <span className="text-[10px] text-slate-400 block">Validate Skills & Get Certificate</span>
+                </div>
+              </button>
+
+              <button
+                onClick={() => {
+                  soundManager.playClick();
+                  setShowTrainingMenu(false);
+                  onOpenFacilitatorGuide();
+                }}
+                className="w-full px-3 py-2 text-left hover:bg-[#1B3B59]/50 text-white flex items-center gap-2 cursor-pointer"
+              >
+                <Users className="w-3.5 h-3.5 text-[#45D6A3]" />
+                <div>
+                  <span className="block">Manager Facilitator Guide</span>
+                  <span className="text-[10px] text-slate-400 block">5-Day Plan & Debrief Prompts</span>
+                </div>
+              </button>
+
+              <button
+                onClick={() => {
+                  soundManager.playClick();
+                  setShowTrainingMenu(false);
+                  onOpenTesterFeedback();
+                }}
+                className="w-full px-3 py-2 text-left hover:bg-[#1B3B59]/50 text-white flex items-center gap-2 cursor-pointer"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-[#27D3F2]" />
+                <div>
+                  <span className="block">External Tester Feedback</span>
+                  <span className="text-[10px] text-slate-400 block">3 Documented User Evaluations</span>
+                </div>
+              </button>
+
+              <button
+                onClick={() => {
+                  soundManager.playClick();
+                  setShowTrainingMenu(false);
+                  onOpenMentor();
+                }}
+                className="w-full px-3 py-2 text-left hover:bg-[#1B3B59]/50 text-white flex items-center gap-2 cursor-pointer border-t border-[#1B3B59]/40 mt-1 pt-1.5"
+              >
+                <Bot className="w-3.5 h-3.5 text-[#45D6A3]" />
+                <div>
+                  <span className="block">Ask Jean-Pierre (AI Mentor)</span>
+                  <span className="text-[10px] text-[#45D6A3] block">Verified Logistics Knowledge</span>
+                </div>
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Corridor Lenses Dropdown */}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => {
+              soundManager.playClick();
+              setShowLensesMenu(!showLensesMenu);
+              setShowTrainingMenu(false);
+            }}
             className="px-2.5 py-1.5 rounded-lg bg-[#0B2235] hover:bg-[#1B3B59] text-xs font-mono text-[#9CB0C0] hover:text-white border border-[#1B3B59] flex items-center gap-1.5 transition-colors cursor-pointer"
           >
-            <span>Dossiers & Lenses</span>
+            <span>Dossiers</span>
             <ChevronDown className="w-3.5 h-3.5 text-[#9CB0C0]" />
           </button>
 

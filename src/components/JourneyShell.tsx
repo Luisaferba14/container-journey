@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { JOURNEY_STAGES } from '../data/journey';
-import { JourneyStage, Waypoint } from '../types/journey';
+import { JourneyStage } from '../types/journey';
+import { OPERATIONAL_DECISIONS, OperationalDecision, DecisionOption } from '../data/simulation';
 import { TopHUD } from './TopHUD';
 import { DayTimeline } from './DayTimeline';
 import { SceneDossier } from './SceneDossier';
@@ -14,6 +15,12 @@ import { PortMicroExperience } from './PortMicroExperience';
 import { SlotSelectorModal } from './SlotSelectorModal';
 import { DisruptionModal } from './DisruptionModal';
 import { EvidenceLedgerModal } from './EvidenceLedgerModal';
+import { DecisionModal } from './DecisionModal';
+import { AssessmentModal } from './AssessmentModal';
+import { FacilitatorGuideModal } from './FacilitatorGuideModal';
+import { TesterFeedbackModal } from './TesterFeedbackModal';
+import { ForwarderMentorModal } from './ForwarderMentorModal';
+import { MissionBriefingModal } from './MissionBriefingModal';
 import { soundManager } from './AudioController';
 import { RotateCcw } from 'lucide-react';
 
@@ -21,6 +28,12 @@ export const JourneyShell: React.FC = () => {
   const [currentStageIndex, setCurrentStageIndex] = useState(0);
   const [currentDay, setCurrentDay] = useState(JOURNEY_STAGES[0].dayStart);
   const [mode, setMode] = useState<'tour' | 'explore'>('tour');
+
+  // Trainee gamified state
+  const [traineeName, setTraineeName] = useState('Luisa Bayona');
+  const [traineeScore, setTraineeScore] = useState(100);
+  const [userDecisions, setUserDecisions] = useState<Record<string, DecisionOption>>({});
+  const [unlockedBadges, setUnlockedBadges] = useState<Array<{ id: string; title: string; icon: string; description: string }>>([]);
 
   // Modals state
   const [isPassportOpen, setIsPassportOpen] = useState(false);
@@ -32,6 +45,14 @@ export const JourneyShell: React.FC = () => {
   const [isSlotSelectorOpen, setIsSlotSelectorOpen] = useState(false);
   const [isSourcesOpen, setIsSourcesOpen] = useState(false);
   const [activeDisruptionId, setActiveDisruptionId] = useState<'event-1' | 'event-2' | 'event-3' | null>(null);
+
+  // New Training & Evaluation Modals
+  const [activeDecision, setActiveDecision] = useState<OperationalDecision | null>(null);
+  const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
+  const [isFacilitatorGuideOpen, setIsFacilitatorGuideOpen] = useState(false);
+  const [isTesterFeedbackOpen, setIsTesterFeedbackOpen] = useState(false);
+  const [isMentorOpen, setIsMentorOpen] = useState(false);
+  const [isBriefingOpen, setIsBriefingOpen] = useState(false);
 
   const currentStage: JourneyStage = JOURNEY_STAGES[currentStageIndex];
 
@@ -65,6 +86,12 @@ export const JourneyShell: React.FC = () => {
         setIsSlotSelectorOpen(false);
         setIsSourcesOpen(false);
         setActiveDisruptionId(null);
+        setActiveDecision(null);
+        setIsAssessmentOpen(false);
+        setIsFacilitatorGuideOpen(false);
+        setIsTesterFeedbackOpen(false);
+        setIsMentorOpen(false);
+        setIsBriefingOpen(false);
       }
     };
 
@@ -100,10 +127,30 @@ export const JourneyShell: React.FC = () => {
     setMode((prev) => (prev === 'tour' ? 'explore' : 'tour'));
   };
 
+  // Operational Decision Resolution Handler
+  const handleSelectDecisionOption = (decisionId: string, option: DecisionOption) => {
+    const existing = userDecisions[decisionId];
+    const prevDelta = existing ? existing.scoreDelta : 0;
+    const netDelta = option.scoreDelta - prevDelta;
+
+    setTraineeScore((prev) => Math.max(0, prev + netDelta));
+    setUserDecisions((prev) => ({ ...prev, [decisionId]: option }));
+
+    if (option.badgeUnlocked) {
+      setUnlockedBadges((prev) => {
+        if (!prev.some((b) => b.id === option.badgeUnlocked?.id)) {
+          soundManager.playTwistLock();
+          return [...prev, option.badgeUnlocked!];
+        }
+        return prev;
+      });
+    }
+  };
+
   return (
     <div className="relative w-screen h-screen bg-[#07131F] text-[#F4F8FB] flex flex-col overflow-hidden font-sans">
       
-      {/* 1. Sleek Top Header */}
+      {/* 1. Sleek Top Header with Trainee Performance Bar */}
       <TopHUD
         currentStage={currentStage}
         currentDay={currentDay}
@@ -117,6 +164,14 @@ export const JourneyShell: React.FC = () => {
         onOpenEmissions={() => setIsEmissionsOpen(true)}
         onOpenPort={() => setIsPortSimOpen(true)}
         onOpenSources={() => setIsSourcesOpen(true)}
+        traineeScore={traineeScore}
+        badgesCount={unlockedBadges.length}
+        onOpenBriefing={() => setIsBriefingOpen(true)}
+        onOpenAssessment={() => setIsAssessmentOpen(true)}
+        onOpenFacilitatorGuide={() => setIsFacilitatorGuideOpen(true)}
+        onOpenTesterFeedback={() => setIsTesterFeedbackOpen(true)}
+        onOpenMentor={() => setIsMentorOpen(true)}
+        traineeName={traineeName}
       />
 
       {/* 2. Slim Progress Timeline */}
@@ -131,7 +186,7 @@ export const JourneyShell: React.FC = () => {
       {/* 3. Docked 2-Column Clean Workspace */}
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
         
-        {/* Left Column: Dedicated Reading & Narrative Pane */}
+        {/* Left Column: Dedicated Reading, Story & Decision Pane */}
         <div className="w-full md:w-[46%] lg:w-[40%] xl:w-[38%] max-w-[580px] h-full flex flex-col border-r border-[#1B3B59]/60 bg-[#07131F] shrink-0 z-10 shadow-2xl">
           <SceneDossier
             stage={currentStage}
@@ -147,6 +202,8 @@ export const JourneyShell: React.FC = () => {
             onOpenPortSim={() => setIsPortSimOpen(true)}
             onOpenDisruption={(id) => setActiveDisruptionId(id)}
             onOpenPassport={() => setIsPassportOpen(true)}
+            onOpenDecision={(dec) => setActiveDecision(dec)}
+            userDecisions={userDecisions}
           />
         </div>
 
@@ -177,12 +234,12 @@ export const JourneyShell: React.FC = () => {
       </div>
 
       {/* 4. Minimalist Academic Disclaimer Footer */}
-      <footer className="w-full bg-[#07131F] border-t border-[#1B3B59]/60 px-4 py-1.5 text-[10px] text-[#9CB0C0] font-mono flex flex-col sm:flex-row items-center justify-between gap-1 z-20 h-7 shrink-0">
+      <footer className="w-full bg-[#07131F] border-t border-[#1B3B59]/60 px-4 py-1 text-[10px] text-[#9CB0C0] font-mono flex flex-col sm:flex-row items-center justify-between gap-1 z-20 h-7 shrink-0">
         <div className="text-slate-400">
-          BOX 917 · <span className="text-[#FF6B35] font-semibold">KEDU 240917 4</span> · 47 Days Multimodal Journey
+          Challenge 8 · <span className="text-[#FF6B35] font-semibold">BOX 917</span> · Trainee: <span className="text-white font-medium">{traineeName}</span> · Score: <span className="text-[#45D6A3] font-bold">{traineeScore} pts</span>
         </div>
         <p className="text-slate-400 text-center sm:text-right truncate max-w-2xl">
-          Fictional shipment built from real logistics processes & published sources. Dates, costs & events are illustrative.
+          Fictional training simulation built on real maritime procedures, SOLAS VGM, Incoterms 2020 DAP & Port of Marseille-Fos.
         </p>
       </footer>
 
@@ -243,6 +300,47 @@ export const JourneyShell: React.FC = () => {
       <EvidenceLedgerModal
         isOpen={isSourcesOpen}
         onClose={() => setIsSourcesOpen(false)}
+      />
+
+      {/* Challenge 8 Specific Training & Gamification Modals */}
+      <DecisionModal
+        decision={activeDecision}
+        isOpen={activeDecision !== null}
+        onClose={() => setActiveDecision(null)}
+        selectedOptionId={activeDecision ? userDecisions[activeDecision.id]?.id : undefined}
+        onSelectOption={handleSelectDecisionOption}
+        currentScore={traineeScore}
+      />
+
+      <AssessmentModal
+        isOpen={isAssessmentOpen}
+        onClose={() => setIsAssessmentOpen(false)}
+        onAssessmentCompleted={(quizScore) => {
+          setTraineeScore((prev) => prev + quizScore * 5);
+        }}
+        traineeName={traineeName}
+      />
+
+      <FacilitatorGuideModal
+        isOpen={isFacilitatorGuideOpen}
+        onClose={() => setIsFacilitatorGuideOpen(false)}
+      />
+
+      <TesterFeedbackModal
+        isOpen={isTesterFeedbackOpen}
+        onClose={() => setIsTesterFeedbackOpen(false)}
+      />
+
+      <ForwarderMentorModal
+        isOpen={isMentorOpen}
+        onClose={() => setIsMentorOpen(false)}
+      />
+
+      <MissionBriefingModal
+        isOpen={isBriefingOpen}
+        onClose={() => setIsBriefingOpen(false)}
+        traineeName={traineeName}
+        setTraineeName={setTraineeName}
       />
 
     </div>
