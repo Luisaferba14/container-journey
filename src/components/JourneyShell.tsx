@@ -203,8 +203,10 @@ export const JourneyShell: React.FC = () => {
             onOpenDisruption={(id) => setActiveDisruptionId(id)}
             onOpenPassport={() => setIsPassportOpen(true)}
             onOpenDecision={(dec) => setActiveDecision(dec)}
+            onOpenAssessment={() => setIsAssessmentOpen(true)}
             userDecisions={userDecisions}
             userRole={userRole}
+            traineeName={traineeName}
           />
         </div>
 

@@ -123,61 +123,73 @@ export const TopHUD: React.FC<TopHUDProps> = ({
       {/* Center: Distinction Between Trainee & Manager */}
       <div className="flex items-center gap-2">
         {userRole === 'trainee' ? (
-          /* Trainee View */
-          <div className="flex items-center gap-2 bg-[#0B2235]/70 px-3 py-1 rounded-full border border-[#1B3B59] text-xs font-mono">
-            <button
-              type="button"
-              onClick={onToggleRole}
-              title="Click to switch to Manager View"
-              className="flex items-center gap-1.5 text-slate-300 hover:text-white transition-colors cursor-pointer"
-            >
-              <Briefcase className="w-3.5 h-3.5 text-[#27D3F2]" />
-              <span className="hidden sm:inline font-semibold">{traineeName || 'Trainee'}:</span>
-              <strong className="text-[#45D6A3]">{traineeScore} pts</strong>
-            </button>
-            <span className="text-[#1B3B59]">|</span>
-            <span className={`text-[11px] font-bold hidden md:inline ${rank.color}`}>
+          /* Gamified Trainee Player Console */
+          <div className="flex items-center gap-2 sm:gap-3 bg-[#0B2235] px-3.5 py-1 rounded-xl border border-[#27D3F2]/40 shadow-lg font-mono">
+            {/* Cadet Avatar & Username */}
+            <div className="flex items-center gap-2 pr-2 border-r border-[#1B3B59]/80">
+              <span className="text-sm">🎖️</span>
+              <div className="flex flex-col">
+                <span className="text-[8px] uppercase tracking-wider text-[#27D3F2] font-bold leading-none">
+                  Cadet Forwarder
+                </span>
+                <span className="text-xs font-bold text-white tracking-wide truncate max-w-[110px] sm:max-w-[150px]">
+                  {traineeName || 'Player 1'}
+                </span>
+              </div>
+            </div>
+
+            {/* Prominent Glowing Score */}
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-[#07131F] border border-[#45D6A3]/50 shadow-inner">
+              <span className="text-xs">🏆</span>
+              <span className="text-xs sm:text-sm font-extrabold text-[#45D6A3] tracking-wider">
+                {traineeScore}
+              </span>
+              <span className="text-[9px] text-slate-400 font-semibold">PTS</span>
+            </div>
+
+            {/* Rank / Title */}
+            <span className={`text-[10px] font-bold hidden md:inline px-2 py-0.5 rounded bg-[#07131F]/50 border border-white/5 ${rank.color}`}>
               {rank.title}
             </span>
-            {badgesCount > 0 && (
-              <>
-                <span className="text-[#1B3B59] hidden sm:inline">|</span>
-                <span className="text-[11px] text-[#FFB020] hidden sm:flex items-center gap-1">
-                  <span>🏅</span> {badgesCount}
-                </span>
-              </>
-            )}
+
+            {/* Badges Counter */}
+            <div className="flex items-center gap-1 text-[11px] text-[#FFB020] font-bold" title={`${badgesCount} of 6 Achievement Badges Unlocked`}>
+              <span>🏅</span>
+              <span>{badgesCount}/6</span>
+            </div>
+
+            {/* Manager Switch Button */}
             <button
               type="button"
               onClick={onToggleRole}
-              className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-[#1B3B59]/50 hover:bg-[#1B3B59] text-[#27D3F2] transition-colors cursor-pointer ml-1"
-              title="Switch to Manager View"
+              className="text-[9px] uppercase font-bold px-2 py-1 rounded bg-[#1B3B59]/60 hover:bg-[#1B3B59] text-[#9CB0C0] hover:text-[#27D3F2] transition-colors cursor-pointer ml-1 hidden sm:inline-block"
+              title="Switch to Facilitator / Manager Mode"
             >
-              Switch to Manager
+              Manager View →
             </button>
           </div>
         ) : (
           /* Manager Facilitator View */
-          <div className="flex items-center gap-2 bg-[#45D6A3]/10 px-3 py-1 rounded-full border border-[#45D6A3]/40 text-xs font-mono">
+          <div className="flex items-center gap-2 bg-[#45D6A3]/15 px-3 py-1 rounded-xl border border-[#45D6A3]/50 text-xs font-mono">
             <div className="flex items-center gap-1.5">
-              <Users className="w-3.5 h-3.5 text-[#45D6A3]" />
-              <span className="text-[#45D6A3] font-bold">👔 Manager View</span>
+              <span className="text-sm">👔</span>
+              <span className="text-[#45D6A3] font-bold">Manager Facilitator</span>
             </div>
             <span className="text-[#45D6A3]/40">|</span>
             <button
               type="button"
               onClick={onOpenFacilitatorGuide}
-              className="text-[10px] text-white hover:text-[#45D6A3] underline transition-colors cursor-pointer"
+              className="text-[11px] text-white hover:text-[#45D6A3] underline transition-colors cursor-pointer"
             >
-              Facilitator Handbook & Key
+              Curriculum & Answer Key
             </button>
             <button
               type="button"
               onClick={onToggleRole}
-              className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-[#45D6A3]/20 hover:bg-[#45D6A3]/30 text-[#45D6A3] transition-colors cursor-pointer ml-1"
+              className="text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-[#45D6A3]/20 hover:bg-[#45D6A3]/30 text-[#45D6A3] transition-colors cursor-pointer ml-1"
               title="Switch to Trainee View"
             >
-              Switch to Trainee
+              Cadet View →
             </button>
           </div>
         )}
@@ -411,22 +423,35 @@ export const TopHUD: React.FC<TopHUDProps> = ({
           <BookOpen className="w-3.5 h-3.5" />
         </button>
 
-        {/* Tour / Explore Toggle */}
+        {/* Map Camera Mode Toggle: Auto-Track vs Free-Pan */}
         <button
           type="button"
           onClick={() => {
             soundManager.playClick();
             onToggleMode();
           }}
-          className={`px-2 py-1.5 rounded-lg text-xs font-mono font-medium hidden sm:flex items-center gap-1 transition-colors border cursor-pointer ${
+          className={`px-2.5 py-1.5 rounded-lg text-xs font-mono font-medium hidden sm:flex items-center gap-1.5 transition-colors border cursor-pointer ${
             mode === 'tour'
-              ? 'bg-[#27D3F2]/10 text-[#27D3F2] border-[#27D3F2]/40'
-              : 'bg-[#FF6B35]/10 text-[#FF6B35] border-[#FF6B35]/40'
+              ? 'bg-[#27D3F2]/15 text-[#27D3F2] border-[#27D3F2]/50 hover:bg-[#27D3F2]/25'
+              : 'bg-[#FF6B35]/15 text-[#FF6B35] border-[#FF6B35]/50 hover:bg-[#FF6B35]/25'
           }`}
-          title={mode === 'tour' ? 'Switch to Explore Mode' : 'Switch to Guided Tour'}
+          title={
+            mode === 'tour'
+              ? 'Map Camera locked on Container 917. Click to unlock Free-Pan globe'
+              : 'Free-Pan globe mode active. Click to lock camera back to Container 917'
+          }
         >
-          {mode === 'tour' ? <Play className="w-3 h-3 fill-current" /> : <Eye className="w-3 h-3" />}
-          <span>{mode === 'tour' ? 'Tour' : 'Free'}</span>
+          {mode === 'tour' ? (
+            <>
+              <Eye className="w-3.5 h-3.5 text-[#27D3F2]" />
+              <span className="font-semibold">🎯 Auto-Track</span>
+            </>
+          ) : (
+            <>
+              <Play className="w-3.5 h-3.5 text-[#FF6B35]" />
+              <span className="font-semibold">🌐 Free-Pan</span>
+            </>
+          )}
         </button>
 
       </div>

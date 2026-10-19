@@ -16,8 +16,137 @@ import {
   Unlock,
   ChevronRight,
   TrendingUp,
-  Leaf
+  Leaf,
+  Award,
+  MapPin,
+  CheckCheck,
+  Clock,
+  Compass
 } from 'lucide-react';
+
+interface PassportStamp {
+  id: string;
+  stageNumber: number;
+  country: string;
+  flag: string;
+  portCode: string;
+  checkpointName: string;
+  stampDate: string;
+  statusBadge: string;
+  authority: string;
+  inspectionDetail: string;
+}
+
+const PASSPORT_STAMPS: PassportStamp[] = [
+  {
+    id: 'stamp-1',
+    stageNumber: 4,
+    country: 'Vietnam',
+    flag: '🇻🇳',
+    portCode: 'VNBDG',
+    checkpointName: 'Bình Dương ICD Inland Port',
+    stampDate: '13 OCT 2026',
+    statusBadge: 'EXPORT GATE-IN CLEARED',
+    authority: 'General Department of Vietnam Customs',
+    inspectionDetail: 'Container gated in, bolt seal VN847291 verified, export filing registered.'
+  },
+  {
+    id: 'stamp-2',
+    stageNumber: 6,
+    country: 'Vietnam',
+    flag: '🇻🇳',
+    portCode: 'VNBDG-VGM',
+    checkpointName: 'Certified Weighbridge Station',
+    stampDate: '14 OCT 2026',
+    statusBadge: 'SOLAS VGM 15,900 KG',
+    authority: 'IMO SOLAS Chapter VI / Scalemaster',
+    inspectionDetail: 'Gross Mass officially certified at 15,900 kg via Method 1 weighbridge.'
+  },
+  {
+    id: 'stamp-3',
+    stageNumber: 9,
+    country: 'Vietnam',
+    flag: '🇻🇳',
+    portCode: 'VNVUT',
+    checkpointName: 'CMIT Cai Mep Deep-Sea Berth',
+    stampDate: '18 OCT 2026',
+    statusBadge: 'LOADED MV PORTALIS',
+    authority: 'APM Terminals / CMIT Operations',
+    inspectionDetail: 'Slotted under-deck in cell guide Bay 34 / Row 04 / Tier 06. Twist-locks locked.'
+  },
+  {
+    id: 'stamp-4',
+    stageNumber: 10,
+    country: 'Singapore',
+    flag: '🇸🇬',
+    portCode: 'SGSIN',
+    checkpointName: 'Singapore Strait Transit Chokepoint',
+    stampDate: '23 OCT 2026',
+    statusBadge: 'MALACCA PASSAGE CLEARED',
+    authority: 'Maritime & Port Authority of Singapore',
+    inspectionDetail: 'Vessel Traffic Information System (VTIS) Eastbound-Westbound transit verified.'
+  },
+  {
+    id: 'stamp-5',
+    stageNumber: 10,
+    country: 'Indian Ocean',
+    flag: '🌊',
+    portCode: 'IND-08',
+    checkpointName: 'Monsoon Storm Corridor',
+    stampDate: '08 NOV 2026',
+    statusBadge: 'WEATHER DIVERSION SURVIVED',
+    authority: 'Blue Meridian Lines Fleet Navigation',
+    inspectionDetail: '45 nm southern storm core diversion executed. Ship stability and cargo secured.'
+  },
+  {
+    id: 'stamp-6',
+    stageNumber: 11,
+    country: 'Egypt',
+    flag: '🇪🇬',
+    portCode: 'EGSUZ',
+    checkpointName: 'Suez Canal Convoy (Port Said)',
+    stampDate: '15 NOV 2026',
+    statusBadge: 'NORTHBOUND CONVOY PASSED',
+    authority: 'Suez Canal Authority (SCA)',
+    inspectionDetail: 'Locked canal transit completed in 14 hours. Entry into Mediterranean basin.'
+  },
+  {
+    id: 'stamp-7',
+    stageNumber: 12,
+    country: 'France',
+    flag: '🇫🇷',
+    portCode: 'FRFOS',
+    checkpointName: 'Eurofos Terminal, Marseille-Fos',
+    stampDate: '24 NOV 2026',
+    statusBadge: 'EU ENTRY · BAE GRANTED',
+    authority: 'French Customs (Douane) / Eurofos',
+    inspectionDetail: 'Advance ICS2 validated. Mobile X-ray radioscopy clear. Electronic BAE release granted.'
+  },
+  {
+    id: 'stamp-8',
+    stageNumber: 13,
+    country: 'France',
+    flag: '🇫🇷',
+    portCode: 'FRVNS',
+    checkpointName: 'Vénissieux Intermodal Railhead',
+    stampDate: '27 NOV 2026',
+    statusBadge: 'ELECTRIC RAIL SHUTTLE',
+    authority: 'Naviland Cargo / SNCF Réseau',
+    inspectionDetail: 'Discharged from Naviland Cargo electrified rail shuttle. 78% carbon savings achieved.'
+  },
+  {
+    id: 'stamp-9',
+    stageNumber: 14,
+    country: 'France',
+    flag: '🇫🇷',
+    portCode: 'FRSQF',
+    checkpointName: 'RhôneSport DC, Saint-Quentin',
+    stampDate: '28 NOV 2026',
+    statusBadge: 'SEAL CUT · POD SIGNED',
+    authority: 'RhôneSport Logistics Receiving',
+    inspectionDetail: 'Seal VN847291 cut intact. 12,000 pairs of shoes unloaded without damage. DAP completed.'
+  }
+];
 
 interface ContainerPassportProps {
   stage: JourneyStage;
@@ -33,7 +162,7 @@ export const ContainerPassport: React.FC<ContainerPassportProps> = ({
   onOpenDocuments
 }) => {
   const [doorsOpen, setDoorsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'specs' | 'cargo' | 'csc' | 'status'>('specs');
+  const [activeTab, setActiveTab] = useState<'specs' | 'cargo' | 'csc' | 'status' | 'stamps'>('stamps');
 
   if (!isOpen) return null;
 
@@ -118,6 +247,17 @@ export const ContainerPassport: React.FC<ContainerPassportProps> = ({
           >
             <Truck className="w-3.5 h-3.5" />
             Live Custody & ETA
+          </button>
+          <button
+            onClick={() => setActiveTab('stamps')}
+            className={`py-3 px-4 font-mono text-xs font-semibold border-b-2 transition-colors flex items-center gap-2 ${
+              activeTab === 'stamps'
+                ? 'border-[#45D6A3] text-[#45D6A3]'
+                : 'border-transparent text-[#9CB0C0] hover:text-white'
+            }`}
+          >
+            <Award className="w-3.5 h-3.5 text-[#45D6A3]" />
+            Passport Stamps & Visas
           </button>
         </div>
 
@@ -475,6 +615,85 @@ export const ContainerPassport: React.FC<ContainerPassportProps> = ({
                 </p>
               </div>
 
+            </div>
+          )}
+
+          {/* TAB 5: BORDER STAMPS & VISAS */}
+          {activeTab === 'stamps' && (
+            <div className="space-y-4">
+              {/* Progress Summary Card */}
+              <div className="bg-[#0B2235]/60 border border-[#1B3B59] rounded-xl p-4 flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                    <span>🛂</span> Container Transit Passport Visas
+                  </h4>
+                  <p className="text-xs text-[#9CB0C0] mt-0.5">
+                    Official customs, terminal, and checkpoint inspection endorsements.
+                  </p>
+                </div>
+                <div className="px-3 py-1 rounded-full bg-[#45D6A3]/20 border border-[#45D6A3]/50 text-[#45D6A3] font-mono font-bold text-xs">
+                  {PASSPORT_STAMPS.filter((s) => stage.stageNumber >= s.stageNumber).length} / {PASSPORT_STAMPS.length} Cleared
+                </div>
+              </div>
+
+              {/* Grid of Stamps */}
+              <div className="grid sm:grid-cols-2 gap-3">
+                {PASSPORT_STAMPS.map((stamp) => {
+                  const isCleared = stage.stageNumber >= stamp.stageNumber;
+
+                  return (
+                    <div
+                      key={stamp.id}
+                      className={`p-3.5 rounded-xl border relative overflow-hidden transition-all ${
+                        isCleared
+                          ? 'bg-[#0B2235]/80 border-[#45D6A3]/60 shadow-md ring-1 ring-[#45D6A3]/20'
+                          : 'bg-[#07131F]/40 border-dashed border-[#1B3B59]/60 opacity-60'
+                      }`}
+                    >
+                      {/* Authentic Inked Stamp Watermark for cleared checkpoints */}
+                      {isCleared && (
+                        <div className="absolute -right-3 -bottom-3 w-20 h-20 rounded-full border-2 border-[#45D6A3]/20 flex items-center justify-center rotate-[-18deg] pointer-events-none">
+                          <span className="text-[9px] font-mono font-black text-[#45D6A3]/30 uppercase tracking-widest text-center">
+                            PASSED<br />OFFICIAL
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">{stamp.flag}</span>
+                          <div>
+                            <span className="text-[10px] font-mono uppercase tracking-wider text-[#9CB0C0] block leading-none">
+                              {stamp.country} · {stamp.portCode}
+                            </span>
+                            <h5 className="text-xs font-bold text-white font-sans mt-0.5">
+                              {stamp.checkpointName}
+                            </h5>
+                          </div>
+                        </div>
+
+                        <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-extrabold tracking-wider ${
+                          isCleared
+                            ? 'bg-[#45D6A3]/20 text-[#45D6A3] border border-[#45D6A3]/40'
+                            : 'bg-white/5 text-slate-500 border border-white/10'
+                        }`}>
+                          {isCleared ? stamp.statusBadge : 'PENDING'}
+                        </span>
+                      </div>
+
+                      <div className="mt-2.5 pt-2 border-t border-white/10 text-xs font-sans space-y-1">
+                        <p className="text-slate-300 text-[11px] leading-relaxed">
+                          {isCleared ? stamp.inspectionDetail : 'Checkpoint will be unlocked when the shipment reaches this stage.'}
+                        </p>
+                        <div className="flex items-center justify-between text-[10px] font-mono text-[#9CB0C0] pt-1">
+                          <span>Authority: <strong className="text-slate-300">{stamp.authority}</strong></span>
+                          <span>{stamp.stampDate}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
 

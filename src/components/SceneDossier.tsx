@@ -39,8 +39,10 @@ interface SceneDossierProps {
   onOpenDisruption?: (id: 'event-1' | 'event-2' | 'event-3') => void;
   onOpenPassport?: () => void;
   onOpenDecision?: (decision: OperationalDecision) => void;
+  onOpenAssessment?: () => void;
   userDecisions: Record<string, DecisionOption>;
   userRole?: 'trainee' | 'manager';
+  traineeName?: string;
 }
 
 export const SceneDossier: React.FC<SceneDossierProps> = ({
@@ -57,8 +59,10 @@ export const SceneDossier: React.FC<SceneDossierProps> = ({
   onOpenDisruption,
   onOpenPassport,
   onOpenDecision,
+  onOpenAssessment,
   userDecisions,
-  userRole = 'trainee'
+  userRole = 'trainee',
+  traineeName
 }) => {
   const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
   const [sealCut, setSealCut] = useState(false);
@@ -120,6 +124,22 @@ export const SceneDossier: React.FC<SceneDossierProps> = ({
             )}
           </span>
         </div>
+
+        {/* Container Passport & Stamps Shortcut */}
+        <button
+          type="button"
+          onClick={onOpenPassport}
+          className="w-full py-2 px-3.5 rounded-xl bg-[#0B2235]/70 hover:bg-[#1B3B59] border border-[#FF6B35]/30 hover:border-[#FF6B35] text-slate-200 font-mono text-xs flex items-center justify-between transition-all cursor-pointer group shadow-sm"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-base group-hover:scale-110 transition-transform">📘</span>
+            <span className="font-semibold text-white">Container Passport & Visas</span>
+          </div>
+          <span className="text-[11px] text-[#27D3F2] flex items-center gap-1 font-bold">
+            9 Customs Stamps <ChevronRight className="w-3.5 h-3.5" />
+          </span>
+        </button>
+
 
         {/* GAMIFIED OPERATIONAL DECISION & CIRCUMSTANCE CARD */}
         {stageDecision && (
@@ -251,6 +271,41 @@ export const SceneDossier: React.FC<SceneDossierProps> = ({
             {sealCut ? '✓ Seal VN847291 Cut · POD Endorsed' : 'Break Seal VN847291 & Endorse POD'}
           </button>
         )}
+
+        {/* End-of-Journey / Mission Culmination: Certification Exam */}
+        {(stage.id === 'stage-reveal' || stage.id === 'stage-delivery') && (
+          <div className="p-5 rounded-2xl bg-gradient-to-br from-[#0B2235] via-[#0B2235]/90 to-[#07131F] border-2 border-[#FF6B35] shadow-2xl space-y-3.5 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#FF6B35] to-[#FF8C42] flex items-center justify-center text-2xl shadow-md shrink-0">
+                🎓
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-[#FF6B35] bg-[#FF6B35]/15 px-2 py-0.5 rounded border border-[#FF6B35]/30">
+                    Mission Accomplished · Day 48
+                  </span>
+                </div>
+                <h3 className="text-base font-bold font-display text-white mt-0.5">
+                  Final Forwarding Certification Exam
+                </h3>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-200 font-sans leading-relaxed">
+              Congratulations, <strong className="text-white">{traineeName || 'Cadet Forwarder'}</strong>! You safely navigated Box 917 across 12,450 km. Complete the 10-Question Certification Exam to finalize your operational ranking, earn extra XP, and print your official KEDGE graduation certificate!
+            </p>
+
+            <button
+              type="button"
+              onClick={onOpenAssessment}
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FF6B35] to-[#FF8C42] hover:from-[#E85A24] hover:to-[#FF6B35] text-[#07131F] font-mono font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-xl hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+            >
+              <Award className="w-4 h-4 text-[#07131F]" />
+              <span>Take Final Certification Exam (10 Questions) →</span>
+            </button>
+          </div>
+        )}
+
 
         {/* Collapsible Technical Details (Keeps main view uncluttered!) */}
         <div className="border border-[#1B3B59]/60 rounded-xl overflow-hidden bg-[#0B2235]/30">
