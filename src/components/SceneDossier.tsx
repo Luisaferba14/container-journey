@@ -41,6 +41,7 @@ interface SceneDossierProps {
   onOpenPassport?: () => void;
   onOpenDecision?: (decision: OperationalDecision) => void;
   userDecisions: Record<string, DecisionOption>;
+  userRole?: 'trainee' | 'manager';
 }
 
 export const SceneDossier: React.FC<SceneDossierProps> = ({
@@ -58,7 +59,8 @@ export const SceneDossier: React.FC<SceneDossierProps> = ({
   onOpenDisruption,
   onOpenPassport,
   onOpenDecision,
-  userDecisions
+  userDecisions,
+  userRole = 'trainee'
 }) => {
   const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
   const [sealCut, setSealCut] = useState(false);
@@ -170,6 +172,22 @@ export const SceneDossier: React.FC<SceneDossierProps> = ({
                 </button>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Dedicated Manager Facilitator Note (Only visible in Manager Mode) */}
+        {userRole === 'manager' && stageDecision && (
+          <div className="p-3.5 rounded-xl bg-[#45D6A3]/10 border border-[#45D6A3]/40 space-y-1.5 text-xs font-mono animate-in fade-in duration-200">
+            <div className="flex items-center gap-1.5 text-[#45D6A3] font-bold">
+              <Users className="w-3.5 h-3.5" />
+              <span>👔 Manager Facilitator Coaching Insight</span>
+            </div>
+            <p className="text-slate-200 font-sans text-xs leading-relaxed">
+              <strong className="text-white">Best Practice Directive:</strong> {stageDecision.options.find(o => o.isBestPractice)?.actionSummary}
+            </p>
+            <p className="text-slate-300 font-sans text-[11px] pt-1.5 border-t border-[#45D6A3]/20">
+              💡 <span className="font-semibold text-[#45D6A3]">Onboarding Debrief Question:</span> Test if the trainee understands why cutting corners on <strong className="text-white">{stageDecision.options.find(o => o.isBestPractice)?.regulatorySource}</strong> causes compounding port holds and demurrage down the line.
+            </p>
           </div>
         )}
 

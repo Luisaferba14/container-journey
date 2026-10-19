@@ -19,6 +19,19 @@
   --color-text-steel: #9CB0C0;
 }
 
+/* Global pointing finger cursor for all interactive elements */
+button,
+[role="button"],
+a,
+select,
+summary,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+.clickable {
+  cursor: pointer !important;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

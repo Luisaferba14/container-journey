@@ -19,6 +19,7 @@ import { DecisionModal } from './DecisionModal';
 import { AssessmentModal } from './AssessmentModal';
 import { FacilitatorGuideModal } from './FacilitatorGuideModal';
 import { MissionBriefingModal } from './MissionBriefingModal';
+import { OnboardingGameModal, UserRole } from './OnboardingGameModal';
 import { soundManager } from './AudioController';
 import { RotateCcw } from 'lucide-react';
 
@@ -27,11 +28,15 @@ export const JourneyShell: React.FC = () => {
   const [currentDay, setCurrentDay] = useState(JOURNEY_STAGES[0].dayStart);
   const [mode, setMode] = useState<'tour' | 'explore'>('tour');
 
-  // Trainee gamified state
+  // Trainee gamified & role state
+  const [userRole, setUserRole] = useState<UserRole>('trainee');
   const [traineeName, setTraineeName] = useState('Luisa Bayona');
   const [traineeScore, setTraineeScore] = useState(100);
   const [userDecisions, setUserDecisions] = useState<Record<string, DecisionOption>>({});
   const [unlockedBadges, setUnlockedBadges] = useState<Array<{ id: string; title: string; icon: string; description: string }>>([]);
+  const [isOnboardingGuideOpen, setIsOnboardingGuideOpen] = useState(() => {
+    return localStorage.getItem('box917_onboarded') !== 'true';
+  });
 
   // Modals state
   const [isPassportOpen, setIsPassportOpen] = useState(false);
@@ -86,6 +91,7 @@ export const JourneyShell: React.FC = () => {
         setIsAssessmentOpen(false);
         setIsFacilitatorGuideOpen(false);
         setIsBriefingOpen(false);
+        setIsOnboardingGuideOpen(false);
       }
     };
 
@@ -164,6 +170,12 @@ export const JourneyShell: React.FC = () => {
         onOpenAssessment={() => setIsAssessmentOpen(true)}
         onOpenFacilitatorGuide={() => setIsFacilitatorGuideOpen(true)}
         traineeName={traineeName}
+        userRole={userRole}
+        onToggleRole={() => {
+          soundManager.playClick();
+          setUserRole((r) => (r === 'trainee' ? 'manager' : 'trainee'));
+        }}
+        onOpenOnboardingGuide={() => setIsOnboardingGuideOpen(true)}
       />
 
       {/* 2. Slim Progress Timeline */}
@@ -196,6 +208,7 @@ export const JourneyShell: React.FC = () => {
             onOpenPassport={() => setIsPassportOpen(true)}
             onOpenDecision={(dec) => setActiveDecision(dec)}
             userDecisions={userDecisions}
+            userRole={userRole}
           />
         </div>
 
@@ -228,7 +241,11 @@ export const JourneyShell: React.FC = () => {
       {/* 4. Minimalist Academic Disclaimer Footer */}
       <footer className="w-full bg-[#07131F] border-t border-[#1B3B59]/60 px-4 py-1 text-[10px] text-[#9CB0C0] font-mono flex flex-col sm:flex-row items-center justify-between gap-1 z-20 h-7 shrink-0">
         <div className="text-slate-400">
-          Challenge 8 · <span className="text-[#FF6B35] font-semibold">BOX 917</span> · Trainee: <span className="text-white font-medium">{traineeName}</span> · Score: <span className="text-[#45D6A3] font-bold">{traineeScore} pts</span>
+          Challenge 8 · <span className="text-[#FF6B35] font-semibold">BOX 917</span> · {userRole === 'manager' ? (
+            <span className="text-[#27D3F2] font-semibold">👔 Facilitator / Manager Mode</span>
+          ) : (
+            <>Trainee: <span className="text-white font-medium">{traineeName}</span> · Score: <span className="text-[#45D6A3] font-bold">{traineeScore} pts</span></>
+          )}
         </div>
         <p className="text-slate-400 text-center sm:text-right truncate max-w-2xl">
           Fictional training simulation built on real maritime procedures, SOLAS VGM, Incoterms 2020 DAP & Port of Marseille-Fos.
@@ -322,6 +339,18 @@ export const JourneyShell: React.FC = () => {
       <MissionBriefingModal
         isOpen={isBriefingOpen}
         onClose={() => setIsBriefingOpen(false)}
+        traineeName={traineeName}
+        setTraineeName={setTraineeName}
+      />
+
+      <OnboardingGameModal
+        isOpen={isOnboardingGuideOpen}
+        onClose={() => {
+          localStorage.setItem('box917_onboarded', 'true');
+          setIsOnboardingGuideOpen(false);
+        }}
+        userRole={userRole}
+        setUserRole={setUserRole}
         traineeName={traineeName}
         setTraineeName={setTraineeName}
       />

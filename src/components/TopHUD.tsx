@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { JourneyStage } from '../types/journey';
+import { UserRole } from './OnboardingGameModal';
 import { soundManager } from './AudioController';
 import {
   Volume2,
@@ -16,9 +17,10 @@ import {
   ChevronDown,
   Award,
   Target,
-  Bot,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  HelpCircle,
+  Briefcase
 } from 'lucide-react';
 
 interface TopHUDProps {
@@ -40,6 +42,9 @@ interface TopHUDProps {
   onOpenAssessment: () => void;
   onOpenFacilitatorGuide: () => void;
   traineeName: string;
+  userRole: UserRole;
+  onToggleRole: () => void;
+  onOpenOnboardingGuide: () => void;
 }
 
 export const TopHUD: React.FC<TopHUDProps> = ({
@@ -60,7 +65,10 @@ export const TopHUD: React.FC<TopHUDProps> = ({
   onOpenBriefing,
   onOpenAssessment,
   onOpenFacilitatorGuide,
-  traineeName
+  traineeName,
+  userRole,
+  onToggleRole,
+  onOpenOnboardingGuide
 }) => {
   const [isMuted, setIsMuted] = useState(true);
   const [showLensesMenu, setShowLensesMenu] = useState(false);
@@ -112,33 +120,87 @@ export const TopHUD: React.FC<TopHUDProps> = ({
         </div>
       </div>
 
-      {/* Center: Trainee Performance Dashboard Pill */}
+      {/* Center: Distinction Between Trainee & Manager */}
       <div className="flex items-center gap-2">
-        <div className="flex items-center gap-2 bg-[#0B2235]/70 px-3 py-1 rounded-full border border-[#1B3B59] text-xs font-mono">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#45D6A3] animate-pulse" />
-            <span className="text-slate-300 hidden sm:inline">{traineeName || 'Trainee'}:</span>
-            <strong className="text-[#45D6A3]">{traineeScore} pts</strong>
+        {userRole === 'trainee' ? (
+          /* Trainee View */
+          <div className="flex items-center gap-2 bg-[#0B2235]/70 px-3 py-1 rounded-full border border-[#1B3B59] text-xs font-mono">
+            <button
+              type="button"
+              onClick={onToggleRole}
+              title="Click to switch to Manager View"
+              className="flex items-center gap-1.5 text-slate-300 hover:text-white transition-colors cursor-pointer"
+            >
+              <Briefcase className="w-3.5 h-3.5 text-[#27D3F2]" />
+              <span className="hidden sm:inline font-semibold">{traineeName || 'Trainee'}:</span>
+              <strong className="text-[#45D6A3]">{traineeScore} pts</strong>
+            </button>
+            <span className="text-[#1B3B59]">|</span>
+            <span className={`text-[11px] font-bold hidden md:inline ${rank.color}`}>
+              {rank.title}
+            </span>
+            {badgesCount > 0 && (
+              <>
+                <span className="text-[#1B3B59] hidden sm:inline">|</span>
+                <span className="text-[11px] text-[#FFB020] hidden sm:flex items-center gap-1">
+                  <span>🏅</span> {badgesCount}
+                </span>
+              </>
+            )}
+            <button
+              type="button"
+              onClick={onToggleRole}
+              className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-[#1B3B59]/50 hover:bg-[#1B3B59] text-[#27D3F2] transition-colors cursor-pointer ml-1"
+              title="Switch to Manager View"
+            >
+              Switch to Manager
+            </button>
           </div>
-          <span className="text-[#1B3B59]">|</span>
-          <span className={`text-[11px] font-bold hidden md:inline ${rank.color}`}>
-            {rank.title}
-          </span>
-          {badgesCount > 0 && (
-            <>
-              <span className="text-[#1B3B59] hidden sm:inline">|</span>
-              <span className="text-[11px] text-[#FFB020] hidden sm:flex items-center gap-1">
-                <span>🏅</span> {badgesCount} Badges
-              </span>
-            </>
-          )}
-        </div>
+        ) : (
+          /* Manager Facilitator View */
+          <div className="flex items-center gap-2 bg-[#45D6A3]/10 px-3 py-1 rounded-full border border-[#45D6A3]/40 text-xs font-mono">
+            <div className="flex items-center gap-1.5">
+              <Users className="w-3.5 h-3.5 text-[#45D6A3]" />
+              <span className="text-[#45D6A3] font-bold">👔 Manager View</span>
+            </div>
+            <span className="text-[#45D6A3]/40">|</span>
+            <button
+              type="button"
+              onClick={onOpenFacilitatorGuide}
+              className="text-[10px] text-white hover:text-[#45D6A3] underline transition-colors cursor-pointer"
+            >
+              Facilitator Handbook & Key
+            </button>
+            <button
+              type="button"
+              onClick={onToggleRole}
+              className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-[#45D6A3]/20 hover:bg-[#45D6A3]/30 text-[#45D6A3] transition-colors cursor-pointer ml-1"
+              title="Switch to Trainee View"
+            >
+              Switch to Trainee
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Right: Actions & Academy Tools */}
       <div className="flex items-center gap-1.5 sm:gap-2">
         
-        {/* Training Academy Menu Dropdown */}
+        {/* Quick GUI Guide & Role Setup Trigger */}
+        <button
+          type="button"
+          onClick={() => {
+            soundManager.playClick();
+            onOpenOnboardingGuide();
+          }}
+          className="px-2.5 py-1.5 rounded-lg bg-[#FF6B35]/15 hover:bg-[#FF6B35]/25 text-[#FF6B35] font-mono font-bold text-xs border border-[#FF6B35]/40 flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
+          title="Open Game Setup & GUI Navigation Tour"
+        >
+          <HelpCircle className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">How To Play</span>
+        </button>
+
+        {/* Training Hub Dropdown */}
         <div className="relative">
           <button
             type="button"
@@ -160,8 +222,23 @@ export const TopHUD: React.FC<TopHUDProps> = ({
               onMouseLeave={() => setShowTrainingMenu(false)}
             >
               <div className="px-3 py-1 text-[10px] uppercase font-bold text-[#27D3F2] tracking-wider">
-                Challenge 8 Logistics Training
+                Challenge 8 Training Modules
               </div>
+
+              <button
+                onClick={() => {
+                  soundManager.playClick();
+                  setShowTrainingMenu(false);
+                  onOpenOnboardingGuide();
+                }}
+                className="w-full px-3 py-2 text-left hover:bg-[#1B3B59]/50 text-white flex items-center gap-2 cursor-pointer"
+              >
+                <HelpCircle className="w-3.5 h-3.5 text-[#FF6B35]" />
+                <div>
+                  <span className="block font-semibold">Game Tour & GUI Guide</span>
+                  <span className="text-[10px] text-slate-400 block">Switch roles & review controls</span>
+                </div>
+              </button>
 
               <button
                 onClick={() => {
@@ -173,8 +250,8 @@ export const TopHUD: React.FC<TopHUDProps> = ({
               >
                 <Target className="w-3.5 h-3.5 text-[#27D3F2]" />
                 <div>
-                  <span className="block">Mission Briefing</span>
-                  <span className="text-[10px] text-slate-400 block">5 Stated Learning Objectives</span>
+                  <span className="block font-semibold">5 Learning Objectives</span>
+                  <span className="text-[10px] text-slate-400 block">Multimodal, SOLAS, DAP, Costs</span>
                 </div>
               </button>
 
@@ -186,10 +263,10 @@ export const TopHUD: React.FC<TopHUDProps> = ({
                 }}
                 className="w-full px-3 py-2 text-left hover:bg-[#1B3B59]/50 text-white flex items-center gap-2 cursor-pointer"
               >
-                <Award className="w-3.5 h-3.5 text-[#FF6B35]" />
+                <Award className="w-3.5 h-3.5 text-[#FFB020]" />
                 <div>
-                  <span className="block">10-Question Assessment</span>
-                  <span className="text-[10px] text-slate-400 block">Validate Skills & Get Certificate</span>
+                  <span className="block font-semibold">10-Question Assessment</span>
+                  <span className="text-[10px] text-slate-400 block">Validate skills & get certificate</span>
                 </div>
               </button>
 
@@ -199,12 +276,12 @@ export const TopHUD: React.FC<TopHUDProps> = ({
                   setShowTrainingMenu(false);
                   onOpenFacilitatorGuide();
                 }}
-                className="w-full px-3 py-2 text-left hover:bg-[#1B3B59]/50 text-white flex items-center gap-2 cursor-pointer"
+                className="w-full px-3 py-2 text-left hover:bg-[#1B3B59]/50 text-white flex items-center gap-2 cursor-pointer border-t border-[#1B3B59]/40 mt-1 pt-1.5"
               >
                 <Users className="w-3.5 h-3.5 text-[#45D6A3]" />
                 <div>
-                  <span className="block">Manager Facilitator Guide</span>
-                  <span className="text-[10px] text-slate-400 block">5-Day Plan & Debrief Prompts</span>
+                  <span className="block font-semibold text-[#45D6A3]">Manager Facilitator Guide</span>
+                  <span className="text-[10px] text-slate-400 block">Curriculum, answer key & debriefs</span>
                 </div>
               </button>
             </div>
@@ -341,7 +418,7 @@ export const TopHUD: React.FC<TopHUDProps> = ({
             soundManager.playClick();
             onToggleMode();
           }}
-          className={`px-2 py-1.5 rounded-lg text-xs font-mono font-medium hidden sm:flex items-center gap-1 transition-colors border ${
+          className={`px-2 py-1.5 rounded-lg text-xs font-mono font-medium hidden sm:flex items-center gap-1 transition-colors border cursor-pointer ${
             mode === 'tour'
               ? 'bg-[#27D3F2]/10 text-[#27D3F2] border-[#27D3F2]/40'
               : 'bg-[#FF6B35]/10 text-[#FF6B35] border-[#FF6B35]/40'
