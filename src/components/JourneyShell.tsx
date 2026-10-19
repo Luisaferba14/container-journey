@@ -18,8 +18,6 @@ import { EvidenceLedgerModal } from './EvidenceLedgerModal';
 import { DecisionModal } from './DecisionModal';
 import { AssessmentModal } from './AssessmentModal';
 import { FacilitatorGuideModal } from './FacilitatorGuideModal';
-import { TesterFeedbackModal } from './TesterFeedbackModal';
-import { ForwarderMentorModal } from './ForwarderMentorModal';
 import { MissionBriefingModal } from './MissionBriefingModal';
 import { soundManager } from './AudioController';
 import { RotateCcw } from 'lucide-react';
@@ -50,8 +48,6 @@ export const JourneyShell: React.FC = () => {
   const [activeDecision, setActiveDecision] = useState<OperationalDecision | null>(null);
   const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
   const [isFacilitatorGuideOpen, setIsFacilitatorGuideOpen] = useState(false);
-  const [isTesterFeedbackOpen, setIsTesterFeedbackOpen] = useState(false);
-  const [isMentorOpen, setIsMentorOpen] = useState(false);
   const [isBriefingOpen, setIsBriefingOpen] = useState(false);
 
   const currentStage: JourneyStage = JOURNEY_STAGES[currentStageIndex];
@@ -89,8 +85,6 @@ export const JourneyShell: React.FC = () => {
         setActiveDecision(null);
         setIsAssessmentOpen(false);
         setIsFacilitatorGuideOpen(false);
-        setIsTesterFeedbackOpen(false);
-        setIsMentorOpen(false);
         setIsBriefingOpen(false);
       }
     };
@@ -169,8 +163,6 @@ export const JourneyShell: React.FC = () => {
         onOpenBriefing={() => setIsBriefingOpen(true)}
         onOpenAssessment={() => setIsAssessmentOpen(true)}
         onOpenFacilitatorGuide={() => setIsFacilitatorGuideOpen(true)}
-        onOpenTesterFeedback={() => setIsTesterFeedbackOpen(true)}
-        onOpenMentor={() => setIsMentorOpen(true)}
         traineeName={traineeName}
       />
 
@@ -326,15 +318,6 @@ export const JourneyShell: React.FC = () => {
         onClose={() => setIsFacilitatorGuideOpen(false)}
       />
 
-      <TesterFeedbackModal
-        isOpen={isTesterFeedbackOpen}
-        onClose={() => setIsTesterFeedbackOpen(false)}
-      />
-
-      <ForwarderMentorModal
-        isOpen={isMentorOpen}
-        onClose={() => setIsMentorOpen(false)}
-      />
 
       <MissionBriefingModal
         isOpen={isBriefingOpen}

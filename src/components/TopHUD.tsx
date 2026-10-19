@@ -39,8 +39,6 @@ interface TopHUDProps {
   onOpenBriefing: () => void;
   onOpenAssessment: () => void;
   onOpenFacilitatorGuide: () => void;
-  onOpenTesterFeedback: () => void;
-  onOpenMentor: () => void;
   traineeName: string;
 }
 
@@ -62,8 +60,6 @@ export const TopHUD: React.FC<TopHUDProps> = ({
   onOpenBriefing,
   onOpenAssessment,
   onOpenFacilitatorGuide,
-  onOpenTesterFeedback,
-  onOpenMentor,
   traineeName
 }) => {
   const [isMuted, setIsMuted] = useState(true);
@@ -209,36 +205,6 @@ export const TopHUD: React.FC<TopHUDProps> = ({
                 <div>
                   <span className="block">Manager Facilitator Guide</span>
                   <span className="text-[10px] text-slate-400 block">5-Day Plan & Debrief Prompts</span>
-                </div>
-              </button>
-
-              <button
-                onClick={() => {
-                  soundManager.playClick();
-                  setShowTrainingMenu(false);
-                  onOpenTesterFeedback();
-                }}
-                className="w-full px-3 py-2 text-left hover:bg-[#1B3B59]/50 text-white flex items-center gap-2 cursor-pointer"
-              >
-                <ShieldCheck className="w-3.5 h-3.5 text-[#27D3F2]" />
-                <div>
-                  <span className="block">External Tester Feedback</span>
-                  <span className="text-[10px] text-slate-400 block">3 Documented User Evaluations</span>
-                </div>
-              </button>
-
-              <button
-                onClick={() => {
-                  soundManager.playClick();
-                  setShowTrainingMenu(false);
-                  onOpenMentor();
-                }}
-                className="w-full px-3 py-2 text-left hover:bg-[#1B3B59]/50 text-white flex items-center gap-2 cursor-pointer border-t border-[#1B3B59]/40 mt-1 pt-1.5"
-              >
-                <Bot className="w-3.5 h-3.5 text-[#45D6A3]" />
-                <div>
-                  <span className="block">Ask Jean-Pierre (AI Mentor)</span>
-                  <span className="text-[10px] text-[#45D6A3] block">Verified Logistics Knowledge</span>
                 </div>
               </button>
             </div>

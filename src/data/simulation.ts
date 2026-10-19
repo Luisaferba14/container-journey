@@ -51,19 +51,6 @@ export interface QuizQuestion {
   regulatorySource: string;
 }
 
-export interface TesterFeedback {
-  id: string;
-  name: string;
-  role: string;
-  organization: string;
-  testingDate: string;
-  durationMinutes: number;
-  score: string;
-  susScore: number;
-  verbatimQuote: string;
-  keyInsight: string;
-  actionTaken: string;
-}
 
 // 5 Stated Learning Objectives (Challenge 8 requirement)
 export const LEARNING_OBJECTIVES: LearningObjective[] = [
@@ -611,86 +598,3 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   }
 ];
 
-// Documented Tester Feedback (Challenge 8 requirement: tested by at least 3 people outside team)
-export const TESTER_FEEDBACK: TesterFeedback[] = [
-  {
-    id: 'tester-1',
-    name: 'Clément Dupont',
-    role: 'Junior Operations Assistant (4 months in role)',
-    organization: 'DeltaBridge Logistics Marseille',
-    testingDate: '24 October 2026',
-    durationMinutes: 34,
-    score: '9 / 10 (90%)',
-    susScore: 92.5,
-    verbatimQuote: 'In my first four months here, nobody had time to explain why VGM was such a big deal or why customs would hold our box for a tiny packing list mismatch. Experiencing the decision point where you choose between rushing the barge and weighing the box made it crystal clear. I will never let a box gate-out without certified scale tickets again.',
-    keyInsight: 'Learners need to see the domino effect: how a 12-hour paperwork delay at origin prevents a €450 port penalty and €1,000s in French demurrage later.',
-    actionTaken: 'Added interactive feedback banners showing exact cost/delay deltas for every choice.'
-  },
-  {
-    id: 'tester-2',
-    name: 'Amina Benali',
-    role: 'Senior Ocean Freight Manager & Onboarding Lead',
-    organization: 'Provence Maritime Logistics Agency',
-    testingDate: '27 October 2026',
-    durationMinutes: 42,
-    score: '10 / 10 (100%)',
-    susScore: 95.0,
-    verbatimQuote: 'The distinction between physical custody and legal responsibility under Incoterms DAP is the single hardest concept for non-logisticians to grasp. Seeing the container move from truck to barge while legal title stays with VietStride until delivery in Saint-Quentin-Fallavier is brilliant pedagogical design. This replaces our 80-page slide deck immediately.',
-    keyInsight: 'The onboarding manager needs a ready-to-use facilitator guide with coaching questions to run weekly debriefs with new hires.',
-    actionTaken: 'Created the dedicated Facilitator Guide module with 5-day curriculum and assessment rubric.'
-  },
-  {
-    id: 'tester-3',
-    name: 'Marc Laurent',
-    role: 'Master 1 Global Supply Chain Student',
-    organization: 'KEDGE Business School Marseille',
-    testingDate: '29 October 2026',
-    durationMinutes: 28,
-    score: '8 / 10 (80%)',
-    susScore: 90.0,
-    verbatimQuote: 'The interactive world map with the dual timeline (44 planned vs 47 actual days) kept me hooked. The slot stowage selector and the French customs scanner simulation make you realize container shipping is an intricate machine, not just a box floating on water. The certificate at the end gave me a real sense of accomplishment.',
-    keyInsight: 'Students and trainees wanted immediate citation links to real rules like SOLAS and EU UCC so they could cite them in workplace discussions.',
-    actionTaken: 'Embedded named public source badges and regulatory citations directly on every quiz question and decision card.'
-  }
-];
-
-// Pre-programmed Knowledge Base for the Senior Forwarder AI Mentor
-export interface MentorFAQ {
-  question: string;
-  category: 'incoterms' | 'customs' | 'vgm' | 'operations' | 'green';
-  answer: string;
-  source: string;
-}
-
-export const MENTOR_FAQS: MentorFAQ[] = [
-  {
-    question: 'Why does Incoterms DAP mean RhôneSport handles French customs, not DeltaBridge or VietStride?',
-    category: 'incoterms',
-    answer: 'Under Incoterms 2020 DAP (Delivered at Place), the seller is obligated to deliver the goods at the disposal of the buyer at the named destination (Saint-Quentin-Fallavier), ready for unloading. However, DAP specifically stipulates that the buyer is responsible for obtaining import licenses, handling import customs clearance, and paying all import duties and taxes. If VietStride were responsible for customs duties, the Incoterm would have been DDP (Delivered Duty Paid).',
-    source: 'ICC Incoterms 2020 DAP Clause B2 & B7'
-  },
-  {
-    question: 'What is the exact legal difference between SOLAS VGM Method 1 and Method 2?',
-    category: 'vgm',
-    answer: 'Under SOLAS Chapter VI Reg 2, Method 1 requires weighing the completely packed and sealed container on a certified weighbridge or scale. Method 2 allows the shipper to weigh all individual packages and cargo items, add the tare mass of pallets and dunnage, plus the tare mass of the container printed on the door, and sum them up using a certified quality-controlled calculation. For footwear with varying cardboard density, Method 1 weighbridge weighing is the most reliable defense against gate lockouts.',
-    source: 'IMO MSC.1/Circ.1475 Paragraph 5.1'
-  },
-  {
-    question: 'What happens if our container exceeds free time on Eurofos quay?',
-    category: 'operations',
-    answer: 'At Eurofos (Port of Marseille-Fos), standard carrier contracts provide 3 to 5 calendar days of terminal storage free time. Once exceeded, demurrage charges accrue daily (starting at approximately €115/day for dry 40-foot containers, escalating steeply on day 8+). These storage charges are billed by the terminal to the ocean carrier, who in turn debits DeltaBridge. Proactive electronic customs pre-lodgement (Delta-IE) is our primary defense against demurrage.',
-    source: 'Port of Marseille Fos Eurofos Schedule of Terminal Charges'
-  },
-  {
-    question: 'Why does the ship reduce speed in the Indian Ocean rather than speeding up to save the schedule?',
-    category: 'operations',
-    answer: 'Pushing through Force 8 monsoon head seas at 19+ knots risks parametric rolling—a severe hydrodynamic resonance where wave encounter periods align with the ship roll period, generating sudden 35-degree rolls that break lashing turnbuckles and topple container stacks into the sea. Easing speed to 14.5 knots relieves hull slamming, protects cargo, prevents engine overspeed, and conserves heavy fuel oil.',
-    source: 'IMO MSC.1/Circ.1228 Revised Guidance to the Master'
-  },
-  {
-    question: 'How does using the Fos-Vénissieux rail shuttle cut emissions by nearly 80%?',
-    category: 'green',
-    answer: 'Direct trucking over the 350 km A7 highway corridor burns approximately 110 liters of diesel, releasing ~480 kg CO2e per 40ft container. The Naviland Cargo rail shuttle operates over electrified tracks powered by the French electrical grid (which is predominantly nuclear and hydroelectric, with emissions under 55g CO2/kWh). Even adding the 25 km drayage truck from Vénissieux to Saint-Quentin-Fallavier, the total footprint is just 105 kg CO2e—a 78% reduction.',
-    source: 'ADEME Base Empreinte & European Environment Agency (EEA) Rail Factors'
-  }
-];
